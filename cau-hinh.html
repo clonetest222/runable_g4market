@@ -122,6 +122,42 @@ h1{
   display:inline-block;margin-top:4px;
 }
 
+/* ---------- ô nhập cấu hình chính xác ---------- */
+.exact{
+  margin-top:10px;border:1px solid var(--line);border-left:3px solid var(--accent);
+  background:var(--surface);border-radius:4px;box-shadow:var(--shadow);
+}
+.exact > summary{
+  cursor:pointer;padding:12px 16px;font-weight:600;font-size:14px;list-style:none;
+  display:flex;align-items:center;gap:8px;
+}
+.exact > summary::-webkit-details-marker{display:none}
+.exact > summary::before{content:"▸";color:var(--accent);font-size:12px;transition:transform .15s}
+.exact[open] > summary::before{transform:rotate(90deg)}
+.exact > summary:hover{color:var(--accent)}
+.exact-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.exact-why,.exact-how{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+.exact-how b{color:var(--ink)}
+.exact-cmd{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.exact-cmd code{
+  flex:1 1 320px;min-width:0;font-family:var(--f-mono);font-size:11px;line-height:1.5;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:8px 10px;
+  color:var(--ink-2);overflow-x:auto;white-space:pre;display:block;
+}
+#pastebox{
+  width:100%;font-family:var(--f-mono);font-size:12.5px;line-height:1.5;resize:vertical;
+  background:var(--surface-2);border:1px solid var(--line-strong);border-radius:3px;
+  padding:8px 10px;color:var(--ink);
+}
+#pastebox:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.exact-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.exact-more{border-top:1px solid var(--line);padding-top:10px;margin-top:2px}
+.exact-more > summary{cursor:pointer;font-size:12.5px;color:var(--muted);font-weight:500}
+.exact-more > summary:hover{color:var(--accent)}
+.exact-more > *:not(summary){margin-top:9px}
+.exact-msg{font-size:12.5px;color:var(--good);font-family:var(--f-mono)}
+.exact-msg.bad{color:var(--bad)}
+
 /* ---------- buttons ---------- */
 button{font-family:inherit;font-size:14px;cursor:pointer}
 .btn{
@@ -240,12 +276,25 @@ select{
       <span class="dot run" id="dot"></span>
       <span class="scan-status" id="status">Đang khởi động trình quét…</span>
       <button class="btn primary" id="rescan" type="button">Quét lại</button>
-      <button class="btn" id="deep" type="button">Đo thật RAM &amp; VRAM</button>
+      <button class="btn" id="deep" type="button">Đo lại RAM &amp; VRAM</button>
       <button class="btn" id="copy" type="button">Chép kết quả</button>
     </div>
     <div class="progress"><i id="bar"></i></div>
   </div>
   <div class="envwarn" id="envwarn" hidden></div>
+
+  <details class="exact" id="exactbox">
+    <summary>Tên CPU chưa đúng? Gõ lại ở đây (tuỳ chọn)</summary>
+    <div class="exact-body">
+      <p class="exact-why"><b>FPS bên dưới đã tính từ số đo chạy trên máy bạn</b>, không phụ thuộc ô này — ô này chỉ đổi cái <b>tên</b> hiển thị. Trình duyệt không có API nào trả về tên CPU, nên trang phải suy ra từ số luồng, cache, cấu trúc nhân và loại máy. Muốn hiện đúng tên thì gõ vào đây, tên nào cũng nhận kể cả chưa có trong danh sách.</p>
+      <textarea id="pastebox" rows="2" placeholder="Ví dụ: i5-11400H   ·   Ryzen 7 5800H   ·   Xeon 8171M"></textarea>
+      <div class="exact-actions">
+        <button class="btn primary" id="applypaste" type="button">Áp dụng</button>
+        <span class="exact-msg" id="pastemsg"></span>
+      </div>
+      <p class="exact-how">Xem tên chip ở <b>Task Manager → Performance → CPU</b>, góc trên bên phải.</p>
+    </div>
+  </details>
 
   <div class="section-head">
     <h2>Cấu hình máy bạn</h2>
@@ -306,15 +355,23 @@ select{
   <div class="notes">
     <div class="note">
       <h3>Số liệu lấy ở đâu ra</h3>
-      <p>Tên GPU đọc từ <code>WEBGL_debug_renderer_info</code> và <code>navigator.gpu</code>, rồi đối chiếu bảng ~160 card (điểm 3DMark Time Spy quy đổi, mốc RTX 3060 = 100). Khi Windows chỉ báo tên chung chung như "AMD Radeon Graphics", trang tra thêm mã thiết bị PCI trong chuỗi đó để biết đúng đời chip. FPS = <code>min(giới hạn GPU, giới hạn CPU)</code> nhân hệ số TDP, preset, độ phân giải và FSR, trừ điểm khi thiếu VRAM hoặc RAM.</p>
+      <p>Tên GPU đọc từ <code>WEBGL_debug_renderer_info</code> và <code>navigator.gpu</code>, rồi đối chiếu bảng ~160 card (mốc RTX 3060 = 100, xem mục nguồn số liệu bên dưới). Khi Windows chỉ báo tên chung chung như "AMD Radeon Graphics", trang tra thêm mã thiết bị PCI trong chuỗi đó để biết đúng đời chip. FPS = <code>min(giới hạn GPU, giới hạn CPU)</code> nhân hệ số TDP, preset, độ phân giải và FSR, trừ điểm khi thiếu VRAM hoặc RAM.</p>
+    </div>
+    <div class="note">
+      <h3>Suy ra tên CPU bằng những gì?</h3>
+      <p>Sáu bằng chứng, tất cả đều đo được ngay trong trình duyệt: <b>số luồng</b>; <b>số nhân thật</b> (chạy T/2 rồi T worker, so tỉ lệ tăng); <b>nhân lớn/nhỏ</b> (độ lệch tốc độ giữa các worker); <b>dung lượng L1/L2/L3</b> (đo độ trễ pointer-chase); <b>laptop hay máy bàn</b> (có pin không, card rời có mang chữ "Laptop" không); và <b>dòng chip suy từ iGPU</b> (Radeon 780M chỉ có trên AMD Phoenix). Sáu thứ đó gộp lại thường chỉ còn một nhóm vài con chip cùng loại — trang liệt kê hết thay vì chọn bừa.</p>
+    </div>
+    <div class="note">
+      <h3>Vì sao vẫn cần bảng tra</h3>
+      <p>Trình duyệt <b>không có API nào trả về tên CPU</b> — không có <code>navigator.cpu</code>, người ta cố tình bỏ để chống nhận dạng người dùng. Nên tên chip bắt buộc phải suy ra. Nhưng để tính FPS thì <b>không cần cái tên, chỉ cần điểm sức mạnh</b> — mà điểm thì đo thẳng trên máy được. Vì vậy trang luôn tính <b>điểm đo thật</b> song song với bảng tra: chip nào không có trong danh sách vẫn ra số đúng, chỉ là không gọi được tên. Khi bảng tra không đủ chắc, trang tự lấy số đo. Cả hai con số đều hiện ra để bạn tự đối chiếu.</p>
     </div>
     <div class="note">
       <h3>Nhận dạng CPU kiểu gì</h3>
-      <p>Không API nào trả về tên CPU, nên trang <b>đo đặc điểm rồi loại trừ</b>: số luồng từ <code>hardwareConcurrency</code>; chạy T/2 rồi T worker để xem tăng bao nhiêu — tăng ~25% nghĩa là có siêu phân luồng, suy ra số nhân thật; so độ lệch tốc độ giữa các worker để phát hiện nhân lớn/nhân nhỏ kiểu Intel 12th+; đo độ trễ pointer-chase để lấy dung lượng L2/L3 (Zen 4 có 1 MB L2 mỗi nhân, Raptor Lake 2 MB, Skylake 256 KB). Cuối cùng, iGPU tiết lộ luôn dòng chip — Radeon 780M chỉ có trên AMD Phoenix.</p>
+      <p>Phần đặt tên thì <b>đo đặc điểm rồi loại trừ</b>: số luồng từ <code>hardwareConcurrency</code>; chạy T/2 rồi T worker để xem tăng bao nhiêu — tăng ~25% nghĩa là có siêu phân luồng, suy ra số nhân thật; so độ lệch tốc độ giữa các worker để phát hiện nhân lớn/nhân nhỏ kiểu Intel 12th+; đo độ trễ pointer-chase để lấy dung lượng L2/L3 (Zen 4 có 1 MB L2 mỗi nhân, Raptor Lake 2 MB, Skylake 256 KB). Cuối cùng, iGPU tiết lộ luôn dòng chip — Radeon 780M chỉ có trên AMD Phoenix.</p>
     </div>
     <div class="note">
-      <h3>Nút “Đo thật RAM &amp; VRAM”</h3>
-      <p>Không API nào trả về hai con số này — <code>deviceMemory</code> bị chặn cứng ở 8 GB và VRAM thì không có API nào cả. Nên trang <b>đo bằng cách cấp phát thật</b>. VRAM: tạo texture 64 MB liên tiếp trên GPU, cứ vài vòng lại xoá một texture cũ và bấm giờ — khi driver hết chỗ và bắt đầu đẩy texture sang RAM hệ thống, thời gian vọt lên gấp mấy lần, đó là mốc VRAM. RAM: xin từng khối 256 MB rồi chạm vào mọi trang 4 KB, dừng ngay khi hệ điều hành bắt đầu đẩy ra ổ cứng, nên ra được <b>phần đang trống</b>, cộng thêm phần Windows đang giữ thì ra con số Task Manager hiển thị. Hai phép này nặng, có thể làm màn hình chớp, vì vậy phải bấm nút chứ không tự chạy.</p>
+      <h3>Phần đo thật RAM &amp; VRAM</h3>
+      <p>Không API nào trả về hai con số này — <code>deviceMemory</code> bị chặn cứng ở 8 GB và VRAM thì không có API nào cả. Nên trang <b>đo bằng cách cấp phát thật</b>. VRAM: tạo texture 64 MB liên tiếp trên GPU, cứ vài vòng lại xoá một texture cũ và bấm giờ — khi driver hết chỗ và bắt đầu đẩy texture sang RAM hệ thống, thời gian vọt lên gấp mấy lần, đó là mốc VRAM. RAM: xin từng khối 256 MB rồi chạm vào mọi trang 4 KB, dừng ngay khi hệ điều hành bắt đầu đẩy ra ổ cứng, nên ra được <b>phần đang trống</b>, cộng thêm phần Windows đang giữ thì ra con số Task Manager hiển thị. Hai phép này chạy <b>tự động ngay sau khi kết quả đầu tiên hiện ra</b>, nên bạn không phải chờ. Máy có dưới 4 GB RAM thì trang bỏ qua để khỏi làm giật.</p>
     </div>
     <div class="note">
       <h3>VRAM của máy dùng iGPU</h3>
@@ -329,8 +386,16 @@ select{
       <p>ROG Ally, Legion Go, Steam Deck, MSI Claw dùng chip liền (APU) nên <b>mức điện mới quyết định FPS</b>, không phải tên chip: cùng một Z1 Extreme, chạy 9 W và 30 W chênh nhau hơn gấp đôi. Trang có riêng ô chọn TDP, ô chia VRAM và ô FSR — RAM chia cho iGPU bao nhiêu thì phần còn lại cho game bị trừ bấy nhiêu.</p>
     </div>
     <div class="note">
+      <h3>Nguồn số liệu</h3>
+      <p>Điểm GPU tầm trung đã <b>đối chiếu với 3DMark Steel Nomad</b> (trung vị kết quả người dùng thật, <a href="https://benchmarks.ul.com/compare/best-gpus" target="_blank" rel="noopener">benchmarks.ul.com</a>) và <b>PassMark G3D</b> (<a href="https://www.videocardbenchmark.net/" target="_blank" rel="noopener">videocardbenchmark.net</a>), lệch trong khoảng 10%. Điểm CPU dựa trên <b>PassMark Single Thread</b> (<a href="https://www.cpubenchmark.net/singleThread.html" target="_blank" rel="noopener">cpubenchmark.net</a>) vì chơi game phụ thuộc đơn nhân là chính. <b>Riêng hệ số từng game thì chưa có nguồn công khai nào tra được hàng loạt</b> — phần đó là ước lượng, và đó là chỗ sai số lớn nhất của trang này.</p>
+    </div>
+    <div class="note">
+      <h3>Chỗ ba nguồn cãi nhau</h3>
+      <p>Card đầu bảng và card quá cũ là nơi các bài benchmark lệch nhau rất xa. RTX 4090 so với RTX 3060: Steel Nomad nói mạnh gấp <b>4.7 lần</b>, PassMark nói <b>2.3 lần</b>. Lý do là Steel Nomad chạy ở 4K nên nới rộng khoảng cách, còn PassMark có cả bài test đời DirectX 9 nên nén lại. FPS game thật ở 1080p nằm ở giữa, nên trang lấy mức giữa. Chiều ngược lại, Steel Nomad chấm GTX 1650 chỉ 320 điểm — card 4 GB không kham nổi bài test 4K nên con số đó vô nghĩa, phải lấy từ nguồn khác.</p>
+    </div>
+    <div class="note">
       <h3>Sai số</h3>
-      <p>Những CPU cùng một con chip (Z1 Extreme, 7840U, 8840HS đều là AMD Phoenix 8 nhân) thì <b>không có cách nào tách nhau qua trình duyệt</b> — trang liệt kê hết thay vì chọn bừa một cái. FPS là ước lượng, không phải đo thật: lệch ±15% là bình thường; laptop cắm sạc hay không, nhiệt độ, driver và RAM chạy 1 thanh hay 2 thanh đều làm thay đổi kết quả. Firefox và Safari che tên GPU nên hãy dùng Chrome hoặc Edge để quét chính xác nhất.</p>
+      <p>Những CPU cùng một con chip (Z1 Extreme, 7840U, 8840HS đều là AMD Phoenix 8 nhân) thì <b>không có cách nào tách nhau qua trình duyệt</b> — trang liệt kê hết thay vì chọn bừa một cái. FPS ở đây là <b>ước lượng theo mô hình, chưa từng đối chiếu với FPS đo thật trong game</b> — đừng coi là con số chắc chắn. Ngoài ra laptop cắm sạc hay không, nhiệt độ, driver và RAM chạy 1 thanh hay 2 thanh đều làm thay đổi kết quả. Firefox và Safari che tên GPU nên hãy dùng Chrome hoặc Edge để quét chính xác nhất.</p>
     </div>
   </div>
 </div>
@@ -351,21 +416,21 @@ const GPUS = [
   ["rtx 5070 laptop",172,8],["rtx 5060 laptop",132,8],["rtx 5050 laptop",95,8],
   // --- NVIDIA RTX 40 ---
   ["rtx 4090",414,24],["rtx 4080 super",328,16],["rtx 4080",316,16],
-  ["rtx 4070 ti super",270,16],["rtx 4070 ti",259,12],["rtx 4070 super",230,12],["rtx 4070",205,12],
-  ["rtx 4060 ti",156,8],["rtx 4060",125,8],
+  ["rtx 4070 ti super",264,16],["rtx 4070 ti",252,12],["rtx 4070 super",226,12],["rtx 4070",194,12],
+  ["rtx 4060 ti",147,8],["rtx 4060",117,8],
   ["rtx 4090 laptop",247,16],["rtx 4080 laptop",213,12],["rtx 4070 laptop",155,8],
   ["rtx 4060 laptop",121,8],["rtx 4050 laptop",90,6],
   // --- NVIDIA RTX 30 ---
   ["rtx 3090 ti",247,24],["rtx 3090",218,24],["rtx 3080 ti",213,12],["rtx 3080",199,10],
-  ["rtx 3070 ti",164,8],["rtx 3070",155,8],["rtx 3060 ti",132,8],["rtx 3060",100,12],
-  ["rtx 3050 ti",78,4],["rtx 3050",71,8],
+  ["rtx 3070 ti",170,8],["rtx 3070",161,8],["rtx 3060 ti",136,8],["rtx 3060",100,12],
+  ["rtx 3050 ti",75,4],["rtx 3050",68,8],
   ["rtx 3080 ti laptop",150,16],["rtx 3080 laptop",138,16],["rtx 3070 ti laptop",122,8],
   ["rtx 3070 laptop",115,8],["rtx 3060 laptop",94,6],["rtx 3050 ti laptop",66,4],["rtx 3050 laptop",60,4],
   // --- NVIDIA RTX 20 / GTX 16 ---
   ["rtx 2080 ti",163,11],["rtx 2080 super",132,8],["rtx 2080",124,8],["rtx 2070 super",118,8],
   ["rtx 2070",106,8],["rtx 2060 super",99,8],["rtx 2060",86,6],
   ["rtx 2070 laptop",88,8],["rtx 2060 laptop",75,6],
-  ["gtx 1660 ti",72,6],["gtx 1660 super",70,6],["gtx 1660",66,6],
+  ["gtx 1660 ti",68,6],["gtx 1660 super",66,6],["gtx 1660",61,6],
   ["gtx 1650 super",57,4],["gtx 1650",41,4],["gtx 1630",26,4],
   ["gtx 1660 ti laptop",60,6],["gtx 1650 ti laptop",42,4],["gtx 1650 laptop",38,4],
   // --- NVIDIA GTX 10 & cũ ---
@@ -378,11 +443,11 @@ const GPUS = [
   // --- AMD RX 9000 / 7000 ---
   ["rx 9070 xt",282,16],["rx 9070",247,16],["rx 9060 xt",155,16],
   ["rx 7900 xtx",345,24],["rx 7900 xt",293,20],["rx 7900 gre",241,16],
-  ["rx 7800 xt",207,16],["rx 7700 xt",172,12],["rx 7650 gre",128,8],["rx 7600 xt",128,16],["rx 7600",121,8],
+  ["rx 7800 xt",207,16],["rx 7700 xt",172,12],["rx 7650 gre",124,8],["rx 7600 xt",124,16],["rx 7600",117,8],
   // --- AMD RX 6000 ---
   ["rx 6950 xt",232,16],["rx 6900 xt",218,16],["rx 6800 xt",201,16],["rx 6800",178,16],
   ["rx 6750 xt",144,12],["rx 6700 xt",132,12],["rx 6700",118,10],["rx 6650 xt",106,8],
-  ["rx 6600 xt",99,8],["rx 6600",84,8],["rx 6500 xt",49,4],["rx 6400",37,4],
+  ["rx 6600 xt",95,8],["rx 6600",80,8],["rx 6500 xt",49,4],["rx 6400",37,4],
   // --- AMD RX 5000 & cũ ---
   ["rx 5700 xt",103,8],["rx 5700",92,8],["rx 5600 xt",80,6],["rx 5500 xt",54,8],
   ["rx 590",53,8],["rx 580",49,8],["rx 570",43,8],["rx 560",22,4],["rx 550",15,2],
@@ -626,10 +691,29 @@ const CPUS = [
   ["Core i5-12450H",85,12,8,100,1280,12,"h"],
   ["Core Ultra 7 155H — MSI Claw",90,22,16,108,2048,24,"h"],
   ["Core Ultra 7 258V",92,8,8,112,2560,12,"h"],
+  ["Core i9-11980HK",98,16,8,102,1280,24],
   ["Core i7-11800H",90,16,8,95,1280,24],
+  ["Core i7-11600H",86,12,6,97,1280,18],
+  ["Core i5-11400H",84,12,6,93,1280,12],
+  ["Core i5-11320H",76,8,4,95,1280,8],
+  ["Core i5-11300H",74,8,4,94,1280,8],
+  ["Core i7-11370H",82,8,4,98,1280,12],
+  ["Core i5-11260H",80,12,6,90,1280,12],
+  ["Core i7-10870H",84,16,8,92,256,16],
   ["Core i7-10750H",78,12,6,90,256,12],
+  ["Core i5-10500H",72,12,6,89,256,12],
   ["Core i5-10300H",65,8,4,88,256,8],
   ["Core i7-9750H",72,12,6,88,256,12],
+  ["Core i5-9300H",60,8,4,84,256,8],
+  ["Core i7-8750H",68,12,6,84,256,9],
+  ["Core i5-8300H",56,8,4,82,256,8],
+  ["Core i7-7700HQ",55,8,4,78,256,6],
+  ["Ryzen 7 6800HS",95,16,8,99,512,16],
+  ["Ryzen 5 6600H",82,12,6,95,512,16],
+  ["Ryzen 5 4600H",70,12,6,78,512,8],
+  ["Ryzen 9 5900HX",96,16,8,95,512,16],
+  ["Ryzen 7 5800HS",90,16,8,91,512,16],
+  ["Ryzen 5 5500H",72,8,4,84,512,8],
   // ---- ARM ----
   ["Snapdragon X Elite",85,12,12,100,12288,6,"arm"],
   ["Apple M-series",110,10,10,120,4096,8,"arm"],
@@ -799,7 +883,8 @@ const state = {
   cpuAlts:[], cpuShowAll:false, evidence:null, arch:null,
   battery:null, batteryHooked:false, powerUserSet:false, bandwidth:null, throttle:1,
   vramMeasured:null, ramFree:null, ramVisible:null, vramFrom:null, vramUserSet:false,
-  vm:null,
+  vm:null, gpuList:[], ramCarve:0, gpuRealName:"", gpuCustomEntry:null,
+  cpuMeasuredIdx:null, cpuDbIdx:100, useMeasuredCpu:false, gpuMeasuredIdx:null, cpuCustom:false,
   ram:16, ramConf:"est",
   screen:"1920 × 1080", hz:60, screenConf:"est",
   os:"Windows", osConf:"est",
@@ -842,6 +927,10 @@ function detectVM(raw){
 }
 
 const GPU_BY_KEY = new Map(GPUS.map(g => [g[0], g]));
+/* Card đang chọn — có thể là mục tự dựng từ tên thật khi bảng tra chưa có */
+function currentGpuEntry(){
+  return state.gpuCustomEntry || GPU_BY_KEY.get(state.gpuKey) || null;
+}
 const gpuName = e => (e && e[3]) ? e[3] : gpuLabel(e ? e[0] : "");
 const isHandheld = e => !!(e && e[4] === "hh");
 const isIntegrated = e => !!e && e[2] === 0;
@@ -871,6 +960,88 @@ function matchGpu(raw){
     }
   }
   return best;
+}
+
+/* Lấy TÊN THẬT driver trả về, không qua bảng tra.
+   "ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Laptop GPU (0x00002520) Direct3D11 ..., D3D11)"
+   → "NVIDIA GeForce RTX 3060 Laptop GPU" */
+function cleanGpuName(raw){
+  let s = String(raw || "").trim();
+  const m = /^ANGLE\s*\(([\s\S]*)\)$/.exec(s);
+  if(m){
+    s = m[1];
+    const i = s.indexOf(",");
+    if(i > -1) s = s.slice(i + 1);
+    s = s.replace(/,\s*(D3D\d+|Vulkan|OpenGL|Metal)[^,]*$/i, "");
+  }
+  s = s.replace(/\(0x[0-9a-fA-F]+\)/g, " ")
+       .replace(/\bDirect3D\d*\b[\s\S]*$/i, " ")
+       .replace(/\bvs_\d_\d\b|\bps_\d_\d\b/gi, " ")
+       .replace(/\/PCIe\/SSE2|\/SSE2|\/PCIe/gi, " ")
+       .replace(/ANGLE Metal Renderer:\s*/i, " ")
+       .replace(/,\s*[^,]*version[^,]*$/i, "")
+       .replace(/\(R\)|\(TM\)|®|™/g, " ")
+       .replace(/\s*,\s*$/, "")
+       .replace(/\s{2,}/g, " ")
+       .trim();
+  return s;
+}
+
+/* Laptop có 2 GPU: trình duyệt mặc định dùng card onboard cho đỡ tốn pin.
+   Hỏi riêng adapter "high-performance" và "low-power" để lòi ra cả hai. */
+async function enumerateGpus(){
+  const found = new Map();
+  const vendorOf = s => /nvidia|geforce|rtx|gtx|quadro|tesla/i.test(s) ? "NVIDIA"
+                      : /radeon|\bamd\b|\brx \d/i.test(s) ? "AMD"
+                      : /intel|arc|iris|uhd graphics|hd graphics/i.test(s) ? "Intel"
+                      : /apple/i.test(s) ? "Apple" : null;
+  const archOf = s => (/ada|lovelace/i.test(s) && "Ada") || (/ampere/i.test(s) && "Ampere")
+                    || (/turing/i.test(s) && "Turing") || (/pascal/i.test(s) && "Pascal")
+                    || (/blackwell/i.test(s) && "Blackwell")
+                    || (/rdna-?3/i.test(s) && "RDNA 3") || (/rdna-?2/i.test(s) && "RDNA 2") || null;
+
+  const add = (raw, source) => {
+    const s = String(raw || "").trim();
+    if(!s) return;
+    const entry = matchGpu(s);
+    const key = entry ? entry[0] : "?" + (vendorOf(s) || s.slice(0,24));
+    if(found.has(key)){ found.get(key).sources.push(source); return; }
+    found.set(key, {entry, raw:s, clean:cleanGpuName(s), vendor:vendorOf(s), arch:archOf(s), sources:[source]});
+  };
+
+  for(const pref of ["high-performance","low-power"]){
+    try{
+      const c = document.createElement("canvas");
+      const gl = c.getContext("webgl2", {powerPreference:pref})
+              || c.getContext("webgl",  {powerPreference:pref});
+      if(gl){
+        const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+        add(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), "WebGL/" + pref);
+        const lose = gl.getExtension("WEBGL_lose_context");
+        if(lose && pref !== "high-performance") lose.loseContext();
+      }
+    }catch(e){}
+    try{
+      if(navigator.gpu){
+        const ad = await navigator.gpu.requestAdapter({powerPreference:pref});
+        if(ad){
+          const info = ad.info || (ad.requestAdapterInfo ? await ad.requestAdapterInfo() : null);
+          if(info){
+            const s = [info.description, info.device, info.architecture, info.vendor].filter(Boolean).join(" ");
+            add(s, "WebGPU/" + pref);
+          }
+        }
+      }
+    }catch(e){}
+  }
+  // Ưu tiên CARD RỜI trước, rồi mới tới điểm mạnh — đó mới là card dùng để chơi game.
+  // Card chưa nhận ra tên nhưng là NVIDIA/AMD thì gần như chắc chắn là card rời.
+  const rank = g => {
+    const discrete = g.entry ? (g.entry[2] > 0 && !g.entry[4])
+                             : (g.vendor === "NVIDIA" || g.vendor === "AMD");
+    return (discrete ? 100000 : 0) + (g.entry ? g.entry[1] : 60);
+  };
+  return [...found.values()].sort((a,b) => rank(b) - rank(a));
 }
 
 function readWebGL(){
@@ -1130,11 +1301,20 @@ function benchGpu(){
   }catch(e){ return null; }
 }
 
-/* Ước lượng thô từ điểm benchmark khi không nhận ra tên GPU */
+/* ===================================================================
+   ĐIỂM TỪ SỐ ĐO THẬT — không cần có tên trong bảng tra.
+   Hai hằng số dưới đây khớp từ máy thật đã biết điểm chuẩn:
+     GPU  Radeon 780M  đo 333 → điểm 40   ·  Intel UHD (Tiger Lake) đo 18 → điểm 8
+     CPU  Z1 Extreme   260 Mops → 118     ·  Core i5-11400H  190 Mops → 86
+   =================================================================== */
+const GPU_BENCH_K = 1.594, GPU_BENCH_P = 0.555;
+function gpuIdxFromBench(u){
+  if(!u || u <= 0) return null;
+  return Math.max(1, Math.round(GPU_BENCH_K * Math.pow(u, GPU_BENCH_P)));
+}
+/* Giữ lại để gợi ý tên card gần nhất, còn điểm thì lấy từ số đo */
 function tierFromBench(u){
-  const t = [[3,6],[8,15],[20,30],[40,55],[70,80],[110,110],[170,150],[250,200],[400,270]];
-  for(const [lim,idx] of t) if(u < lim) return idx;
-  return 350;
+  return gpuIdxFromBench(u) || 30;
 }
 
 /* ===================================================================
@@ -1142,6 +1322,28 @@ function tierFromBench(u){
    Số luồng là bộ lọc cứng; gợi ý từ iGPU là bằng chứng mạnh nhất;
    cấu trúc nhân và cache thu hẹp tiếp; benchmark chỉ dùng để xếp hạng.
    =================================================================== */
+/* Chip dành cho laptop: đuôi H/HS/HX/HQ/U/P/V, hoặc chip máy cầm tay và ARM */
+function isMobileCpu(name){
+  if(/\bZ[12]\b|Steam Deck|Apple M|Snapdragon/i.test(name)) return true;
+  return /\d{3,5}(HQ|HK|HX|HS|H|US|U|P|V)\b/i.test(name);
+}
+
+/* Máy này là laptop hay máy bàn? Web đọc được nhiều dấu hiệu hơn ta tưởng. */
+function detectLaptop(){
+  if(state.handheld) return true;
+  // Card rời bản laptop thì CPU chắc chắn cũng là bản laptop
+  if(/laptop/i.test(state.gpuKey || "")) return true;
+  if((state.gpuList || []).some(g => /laptop|max-?q/i.test(g.raw || ""))) return true;
+  const b = state.battery;
+  if(b && b.supported){
+    // Pin chưa đầy, hoặc đang xả, hoặc có thời gian xả hữu hạn → chắc chắn có pin thật
+    if(!b.charging || b.level < 100 || (b.hours != null)) return true;
+    if(b.desktop) return false;
+  }
+  if(navigator.maxTouchPoints > 0 && state.igpu) return true;
+  return null;   // không đủ căn cứ
+}
+
 function identifyCpu(ev){
   const hints = CPU_HINTS[state.gpuKey] || [];
   const hintSet = new Set(hints);
@@ -1159,6 +1361,13 @@ function identifyCpu(ev){
     }
     // CPU máy chủ chỉ hợp lý khi thật sự đang ở trong máy ảo
     if(server) penalty += ev.vm ? -260 : 420;
+    // 1b. Laptop hay máy bàn — dấu hiệu rất mạnh mà web đọc được:
+    //     có pin, hoặc card rời mang chữ "Laptop"
+    if(ev.laptop != null && !server){
+      const mob = isMobileCpu(c[0]);
+      if(ev.laptop && !mob) penalty += 300;
+      if(!ev.laptop && mob) penalty += 220;
+    }
     // 2. Chip ARM hay x86
     if(ev.arch === "arm" && flag !== "arm") penalty += 800;
     if(ev.arch === "x86" && flag === "arm") penalty += 800;
@@ -1185,8 +1394,13 @@ function identifyCpu(ev){
   scored.sort((a,b)=>a.penalty-b.penalty);
 
   const top = scored[0];
-  // Các ứng viên sát nút = cùng loại chip, không thể tách bằng trình duyệt
-  const alts = scored.slice(1).filter(s => s.penalty - top.penalty < 120).slice(0,3).map(s=>s.c[0]);
+  // Ứng viên sát nút = cùng loại chip. Chỉ nhận cùng hãng, kẻo liệt kê Ryzen bên cạnh Core.
+  const vendor = n => /^(Ryzen|FX|Steam Deck|EPYC|Threadripper)/.test(n) ? "amd"
+                    : /^(Core|Pentium|Celeron|Xeon)/.test(n) ? "intel" : "other";
+  const topVendor = vendor(top.c[0]);
+  const alts = scored.slice(1)
+    .filter(s => s.penalty - top.penalty < 120 && vendor(s.c[0]) === topVendor)
+    .slice(0,3).map(s => s.c[0]);
   // Độ tin cậy: lọc được đến đâu
   let conf = "est";
   if(ev.threads && hintSet.size && alts.length <= 3) conf = "ok";
@@ -1200,6 +1414,10 @@ function applyGpu(entry, conf){
   state.gpuKey  = entry[0];
   state.gpuIdx  = entry[1];
   state.gpuConf = conf;
+  state.gpuCustomEntry = null;
+  // Giữ tên thật của driver nếu nó khớp đúng card này, còn không thì dùng tên bảng tra
+  const m = (state.gpuList || []).find(g => g.entry && g.entry[0] === entry[0]);
+  state.gpuRealName = m ? m.clean : "";
   state.handheld = isHandheld(entry);
   state.igpu = isIntegrated(entry);
   // Chọn tay một card máy chủ hay card ảo cũng có nghĩa là đang ở trong máy ảo
@@ -1209,16 +1427,79 @@ function applyGpu(entry, conf){
   }else if(state.vm && state.vm.kind && state.vm.kind !== "hv"){
     state.vm = {isVM:false, virtualDisplay:false, passthrough:false, kind:null};
   }
-  // iGPU không có VRAM riêng — cắt một phần RAM hệ thống ra dùng.
-  // Máy cầm tay xuất xưởng 16 GB RAM, chia sẵn 4 GB cho GPU → Windows thấy 11.7 GB.
-  if(!state.vramUserSet) state.gpuVram = entry[2] || (state.handheld ? 4 : 2);
+  // Ba trường hợp khác hẳn nhau:
+  //  - card rời: VRAM riêng, Windows không mất GB nào
+  //  - máy cầm tay: BIOS cắt hẳn 4 GB khỏi RAM trước khi Windows đếm
+  //  - iGPU laptop/máy bàn: chỉ giữ chỗ vài trăm MB, phần còn lại mượn động
+  if(!state.vramUserSet){
+    if(entry[2]) state.gpuVram = entry[2];
+    else if(state.handheld) state.gpuVram = 4;
+    else state.gpuVram = Math.max(2, Math.min(8, Math.floor(state.ram/2)));
+  }
+  state.ramCarve = !state.igpu ? 0 : (state.handheld ? state.gpuVram : 0.3);
   if(state.handheld && !state.ramVisible){
     state.ram = 16;
     state.ramVisible = 11.7;
     state.vramFrom = {installed:16, vram:4};
   }
+  // Đổi sang card rời thì con số "Windows thấy" của máy cầm tay không còn đúng
+  if(!state.igpu){ state.ramVisible = null; state.vramFrom = null; }
   // Chế độ nguồn theo tình trạng pin thật, trừ khi người dùng đã tự chọn
   if(state.powerUserSet) syncPower(); else autoPower();
+}
+
+/* ===================================================================
+   NHẬN CẤU HÌNH DÁN VÀO — nguồn chính xác tuyệt đối.
+   Tên CPU nào cũng nhận, kể cả chưa có trong bảng: lúc đó giữ nguyên tên
+   người dùng đưa và lấy sức mạnh từ số đo thật, nên không bao giờ "thiếu".
+   =================================================================== */
+function normCpuName(s){
+  return String(s||"").toLowerCase()
+    .replace(/\(r\)|\(tm\)|®|™/g," ")
+    .replace(/\b\d+(th|st|nd|rd)\s+gen(eration)?\b/g," ")
+    .replace(/@.*$/,"")
+    .replace(/\bw\/.*graphics\b|\bwith\b.*\bgraphics\b/g," ")
+    .replace(/\b\d+[- ]core\b|\bprocessor\b|\bcpu\b|\bapu\b/g," ")
+    .replace(/[^a-z0-9 .-]/g," ")
+    .replace(/\s+/g," ").trim();
+}
+/* Phần tên dùng để tra: bỏ chú thích sau dấu gạch dài hoặc ngoặc */
+const cpuSearchKey = name => String(name).split(/[—(]/)[0].trim().toLowerCase();
+
+function matchCpuByName(raw){
+  const n = normCpuName(raw);
+  if(!n) return null;
+  let best = null, bestLen = 0;
+  for(const c of CPUS){
+    const k = cpuSearchKey(c[0]);
+    if(k.length > 3 && n.includes(k) && k.length > bestLen){ best = c; bestLen = k.length; }
+  }
+  return best;
+}
+
+function parseSpecs(text){
+  const t = String(text || "").replace(/\r/g, " ").trim();
+  const out = {cpu:null, ram:null, usable:null, gpus:[]};
+  let m;
+  if((m = /CPU\s*[=:]\s*([^;\n]+)/i.exec(t)))    out.cpu = m[1].trim();
+  if((m = /RAM\s*[=:]\s*([\d.,]+)\s*GB/i.exec(t)))    out.ram = parseFloat(m[1].replace(",", "."));
+  if((m = /USABLE\s*[=:]\s*([\d.,]+)\s*GB/i.exec(t))) out.usable = parseFloat(m[1].replace(",", "."));
+  if((m = /GPU\s*[=:]\s*([^;\n]+)/i.exec(t)))
+    out.gpus = m[1].split(/\s*\+\s*|,\s*|\s*;\s*/).map(s => s.trim()).filter(Boolean);
+
+  // Không có nhãn: dán thẳng từ Task Manager, dxdiag hay chỉ gõ mỗi tên chip
+  if(!out.cpu){
+    const cm = /((?:\d+(?:th|st|nd|rd)\s+Gen\s+)?(?:Intel|AMD|Apple|Qualcomm)?[^\n;,]*?(?:i[3579][- ]\s*\w+|Ryzen[^\n;,]*|Core\s+Ultra[^\n;,]*|Xeon[^\n;,]*|EPYC[^\n;,]*|Threadripper[^\n;,]*|Snapdragon[^\n;,]*|\bM[1-4]\b[^\n;,]*))/i.exec(t);
+    if(cm) out.cpu = cm[1].trim();
+    else if(t && t.length <= 70 && !/\n/.test(t)) out.cpu = t;
+  }
+  return out;
+}
+
+/* Chọn nguồn điểm CPU: số đo thật hay giá trị trong bảng tra */
+function applyCpuIdx(){
+  const m = state.cpuMeasuredIdx;
+  state.cpuIdx = (state.useMeasuredCpu && m) ? m : (state.cpuDbIdx || state.cpuIdx || 100);
 }
 
 function powerTable(){ return state.handheld ? POWER_HANDHELD : POWER_NORMAL; }
@@ -1282,7 +1563,7 @@ async function probeVram(onStep){
   const SIDE = 4096;                       // 4096 × 4096 × RGBA8 = 64 MB mỗi texture
   const MB_PER = SIDE*SIDE*4/1048576;
   const MAX_MB = 24576;                    // trần an toàn 24 GB
-  const DEADLINE = performance.now() + 9000;
+  const DEADLINE = performance.now() + 7000;
   const texes = [];
   const fb = gl.createFramebuffer();
   const px = new Uint8Array(4);
@@ -1474,29 +1755,54 @@ async function scan(){
   step(10,"Đang hỏi trình duyệt về card đồ họa…");
   await sleep(100);
 
-  const wgl = readWebGL();
-  const wgpu = await readWebGPU();
-  const raw = [wgl, wgpu].filter(Boolean).join(" | ");
+  const gpuList = await enumerateGpus();
+  state.gpuList = gpuList;
+  const raw = gpuList.map(g => g.raw).join(" | ") || readWebGL() || "";
   state.gpuRaw = raw || "không đọc được";
   state.vm = detectVM(raw);
-  const hit = raw ? matchGpu(raw) : null;
+  // Lấy card mạnh nhất tìm được, không lấy card trình duyệt đang tiện tay dùng
+  const hit = gpuList.find(g => g.entry) ? gpuList.find(g => g.entry).entry : (raw ? matchGpu(raw) : null);
 
   step(26,"Đang đo hiệu năng GPU bằng shader nặng…");
   await sleep(40);
   state.benchU = benchGpu();
 
+  // Điểm GPU từ số đo thật — dùng được cả với card chưa có trong bảng
+  state.gpuMeasuredIdx = gpuIdxFromBench(state.benchU);
+
+  // Tên thật do driver trả về, không phụ thuộc bảng tra
+  const chosen = gpuList[0] || null;
+  state.gpuRealName = chosen ? chosen.clean : "";
+  state.gpuCustomEntry = null;
+
   if(hit){
     applyGpu(hit, "ok");
-  }else if(state.benchU != null){
-    const idx = tierFromBench(state.benchU);
-    const near = nearestGpuName(idx);
-    applyGpu(near, "est");
+  }else if(state.gpuRealName || state.gpuMeasuredIdx != null){
+    // Card chưa có trong bảng: GIỮ NGUYÊN tên thật, điểm lấy từ số đo trên chính máy này
+    const idx = state.gpuMeasuredIdx || 30;
+    state.gpuCustomEntry = [
+      "__custom", idx, 0,
+      state.gpuRealName || "Card chưa nhận ra tên",
+      (chosen && chosen.entry) ? (chosen.entry[4] || "") : ""
+    ];
+    state.gpuKey = "__custom";
     state.gpuIdx = idx;
+    state.gpuConf = state.gpuRealName ? "ok" : "est";
+    state.gpuVram = null;                       // chưa biết — bấm "Đo thật" để lấy
+    state.igpu = /uhd|iris|vega|radeon graphics|arc graphics|integrated/i.test(state.gpuRealName);
+    state.handheld = false;
+    state.ramCarve = state.igpu ? 0.3 : 0;
+    if(!state.powerUserSet) autoPower();
   }else{
     state.gpuConf = "no";
   }
 
-  step(44,"Đang đo tốc độ một nhân CPU…");
+  // Đọc pin TRƯỚC khi nhận dạng CPU: có pin hay không là căn cứ quan trọng
+  step(40,"Đang đọc pin và nguồn điện…");
+  state.battery = await readBattery();
+  if(!state.powerUserSet) autoPower();
+
+  step(46,"Đang đo tốc độ một nhân CPU…");
   await sleep(40);
   state.cores = navigator.hardwareConcurrency || 4;
   const stOps = benchSingle();
@@ -1509,11 +1815,12 @@ async function scan(){
   const cache = probeCache();
 
   // Quy điểm đo về thang chuẩn, tự hiệu chỉnh theo trình duyệt
-  const ST_REF = 2.5e6;   // ~250 triệu vòng/giây ≈ điểm đơn nhân 100 (hiệu chỉnh trên Zen 4)
+  const ST_REF = 2.2e6;   // hiệu chỉnh trên Zen 4 và Tiger Lake, sai số ~10%
   state.evidence = {
     threads: state.cores,
     arch: state.arch || null,
     vm: state.vm ? state.vm.isVM : false,
+    laptop: detectLaptop(),
     hybrid: topo.ok ? topo.hybrid : null,
     smt: topo.ok ? topo.smt : null,
     cores: topo.ok ? topo.cores : null,
@@ -1524,12 +1831,18 @@ async function scan(){
     workers: topo.ok
   };
 
+  // Điểm đo thật — luôn tính, không phụ thuộc bảng tra có con chip này hay không
+  state.cpuMeasuredIdx = Math.round(state.evidence.stIndex * coreScale(topo.ok && topo.cores ? topo.cores : state.cores/2));
+
   const id = identifyCpu(state.evidence);
   state.cpuName = id.cpu[0];
-  state.cpuIdx  = cpuGameIdx(id.cpu, state.cores);
+  state.cpuDbIdx = cpuGameIdx(id.cpu, state.cores);
   state.cpuAlts = id.alts;
   state.cpuConf = id.conf;
   state.cpuMeasured = state.evidence.stIndex;
+  // Bảng tra không chắc → tin số đo hơn, vì con chip này có thể chưa có trong bảng
+  state.useMeasuredCpu = id.conf !== "ok";
+  applyCpuIdx();
 
   step(76,"Đang đo băng thông RAM…");
   await sleep(30);
@@ -1543,10 +1856,6 @@ async function scan(){
   }else{
     state.ram = 16; state.ramConf = "no";
   }
-
-  step(84,"Đang đọc pin và nguồn điện…");
-  state.battery = await readBattery();
-  if(!state.powerUserSet) autoPower();
 
   // Chạy lại bài đơn nhân để xem máy có bị bóp xung khi nóng lên không
   const stAgain = benchSingle();
@@ -1575,7 +1884,10 @@ async function scan(){
     : maxSide >= 3600 ? "2160" : maxSide >= 2400 ? "1440" : maxSide >= 1800 ? "1080" : "720";
 
   const ev = state.evidence, bits = [];
-  bits.push(state.gpuConf === "ok" ? "Nhận ra GPU" : state.gpuConf === "est" ? "GPU chỉ ước lượng" : "Không đọc được GPU");
+  const n = (state.gpuList || []).length;
+  bits.push(n > 1 ? "Thấy " + n + " card đồ họa"
+          : state.gpuConf === "ok" ? "Nhận ra GPU"
+          : state.gpuConf === "est" ? "GPU chỉ ước lượng" : "Không đọc được GPU");
   if(ev && ev.cores) bits.push("CPU " + ev.cores + " nhân " + ev.threads + " luồng" + (ev.smt ? ", có SMT" : ""));
   else if(ev && ev.hybrid) bits.push("CPU " + ev.threads + " luồng, nhân lớn + nhân nhỏ");
   else bits.push(state.cores + " luồng CPU");
@@ -1587,6 +1899,10 @@ async function scan(){
   $("status").textContent = bits.join(" · ") + ". Sai thì chọn lại bên dưới.";
   scanning = false;
   render();
+
+  // Kết quả đã hiện xong — giờ mới đo sâu để tinh chỉnh VRAM và RAM.
+  // Máy quá yếu thì bỏ qua, cấp phát lớn dễ làm giật.
+  if((navigator.deviceMemory || 8) >= 4) setTimeout(runDeep, 250);
 }
 
 /* ===================================================================
@@ -1608,8 +1924,8 @@ function setVisibleRam(visible, conf){
 
 /* RAM thực sự còn cho game: iGPU cắt một phần làm VRAM trước khi Windows thấy */
 function usableRam(){
-  if(state.igpu) return Math.max(2, state.ramVisible || (state.ram - state.gpuVram - 0.3));
-  return state.ram;
+  if(!state.igpu) return state.ram;
+  return Math.max(2, state.ramVisible || (state.ram - (state.ramCarve || 0.3)));
 }
 
 function estimate(game, res, preset){
@@ -1618,10 +1934,12 @@ function estimate(game, res, preset){
   const upMul = canUpscale ? upRow[1] : 1;
 
   const vramNeed = game.vram * PRESET_V[preset] * RES_V[res] * (canUpscale ? 0.9 : 1);
-  const haveVram = state.gpuVram || 2;
+  const haveVram = state.gpuVram;                 // null = chưa biết, không phạt oan
   let vramPen = 1, short = null;
-  if(haveVram < vramNeed * 0.75){ vramPen = 0.62; short = "thiếu VRAM nặng"; }
-  else if(haveVram < vramNeed){ vramPen = 0.84; short = "hơi thiếu VRAM"; }
+  if(haveVram != null){
+    if(haveVram < vramNeed * 0.75){ vramPen = 0.62; short = "thiếu VRAM nặng"; }
+    else if(haveVram < vramNeed){ vramPen = 0.84; short = "hơi thiếu VRAM"; }
+  }
 
   const ram = usableRam();
   let ramPen = 1, ramShort = null;
@@ -1673,19 +1991,38 @@ function grade(fps, runnable){
    8. HIỂN THỊ
    =================================================================== */
 /* Dòng liệt kê đúng những gì đo được — không suy diễn thêm */
+/* Không nhận ra chắc chắn thì mô tả bằng chính số đo, thay vì nêu một cái tên có thể sai */
+function cpuDisplayName(){
+  const e = state.evidence;
+  if(state.cpuConf === "ok" || !e) return state.cpuName;
+  const parts = [];
+  if(e.cores) parts.push(e.cores + " nhân");
+  parts.push(e.threads + " luồng");
+  if(e.laptop === true) parts.push("laptop");
+  else if(e.laptop === false) parts.push("máy bàn");
+  return "CPU " + parts.join(" · ");
+}
+
 function cpuEvidenceLine(){
   const e = state.evidence;
   const out = [];
   if(!e) return state.cores + " luồng · chưa đo";
   if(e.vm) out.push("<b>máy ảo cấp " + e.threads + " luồng</b> (một lát cắt của chip máy chủ)");
   else if(e.cores) out.push(e.cores + " nhân · " + e.threads + " luồng" + (e.smt ? " (có siêu phân luồng)" : " (không siêu phân luồng)"));
+  if(e.laptop === true) out.push("chip bản laptop");
+  else if(e.laptop === false) out.push("chip bản máy bàn");
   else if(e.hybrid) out.push(e.threads + " luồng · nhân lớn + nhân nhỏ");
   else out.push(e.threads + " luồng");
   if(e.l1) out.push("L1 ≈ " + e.l1 + " KB");
   if(e.l2) out.push("L2 ≈ " + (e.l2 >= 1024 ? (e.l2/1024).toFixed(e.l2%1024?1:0) + " MB" : e.l2 + " KB") + "/nhân");
   if(e.l3) out.push("L3 ≈ " + e.l3 + " MB");
   if(e.stIndex) out.push("đơn nhân " + e.stIndex);
-  out.push("sức mạnh game " + Math.round(state.cpuIdx * state.powerC));
+  const useM = state.useMeasuredCpu && state.cpuMeasuredIdx;
+  out.push("<b>sức mạnh game " + Math.round(state.cpuIdx * state.powerC) + "</b> ("
+         + (useM ? "từ số đo thật" : "từ bảng tra") + ")");
+  if(state.cpuMeasuredIdx && state.cpuDbIdx && state.cpuMeasuredIdx !== state.cpuDbIdx){
+    out.push("số đo " + state.cpuMeasuredIdx + " · bảng tra " + state.cpuDbIdx);
+  }
   if(!e.workers) out.push("trình duyệt chặn Worker nên không dò được cấu trúc");
   return out.join(" · ");
 }
@@ -1712,6 +2049,7 @@ function ramLine(){
 /* Trình bày rõ phép trừ, để người dùng tự kiểm chứng được */
 function vramDeriveLine(){
   if(state.vramUserSet) return "bạn đã tự chọn · chỉnh trong BIOS hoặc Armoury Crate";
+  if(!state.handheld) return "card onboard mượn RAM hệ thống theo nhu cầu, không cắt cố định — Windows gần như không mất GB nào";
   const d = state.vramFrom;
   if(d && state.ramVisible != null){
     return `${d.installed} GB gắn trên máy − ${state.ramVisible} GB Windows thấy − 0.3 GB phần cứng giữ = <b>${d.vram} GB</b>`;
@@ -1722,6 +2060,29 @@ function vramDeriveLine(){
   return "bấm “Đo thật RAM & VRAM”, hoặc nhập số Task Manager bên dưới";
 }
 
+/* Liệt kê mọi GPU dò được, và cảnh báo khi trình duyệt đang bám card onboard */
+function gpuListLine(){
+  const list = state.gpuList || [];
+  const bits = [];
+  if(list.length > 1){
+    const names = list.map(g => g.entry ? gpuName(g.entry)
+      : (g.vendor ? g.vendor + (g.arch ? " (" + g.arch + ")" : "") : "không rõ"));
+    bits.push("máy có <b>" + list.length + " card</b>: " + names.join(" + "));
+  }
+  // Số đo lệch xa bảng tra = trình duyệt đang vẽ bằng card khác con card đang hiển thị
+  const m = state.gpuMeasuredIdx;
+  if(m && state.gpuConf === "ok" && state.gpuIdx / m > 2.2){
+    bits.push("<b style='color:var(--warn)'>số đo thật chỉ đạt " + m + " điểm, thấp hơn nhiều so với "
+            + Math.round(state.gpuIdx) + " của card này — trình duyệt nhiều khả năng đang vẽ bằng card onboard</b>");
+  }
+  // Card onboard yếu mà máy lại là laptop/để bàn → gần như chắc chắn có card rời chưa lộ ra
+  if(state.igpu && !state.handheld && state.gpuIdx < 50){
+    bits.push("<b style='color:var(--warn)'>Trình duyệt đang dùng card onboard để tiết kiệm pin. "
+            + "Máy bạn có card rời (RTX / GTX / RX)? Chọn đúng model ngay bên dưới — FPS sẽ khác hoàn toàn.</b>");
+  }
+  return bits.length ? " · " + bits.join(" · ") : "";
+}
+
 function vmLine(){
   const v = state.vm;
   if(!v || !v.isVM) return "";
@@ -1730,11 +2091,25 @@ function vmLine(){
   return " · <b style='color:var(--warn)'>đang chạy trong máy ảo</b>";
 }
 
+/* Nói rõ điểm sức mạnh đến từ đâu: tên thật của driver, bảng tra, hay số đo */
+function gpuSourceLine(){
+  const inDb = !state.gpuCustomEntry;
+  if(state.gpuCustomEntry){
+    return "<b>chưa có trong bảng tra — điểm " + Math.round(state.gpuIdx)
+         + " lấy từ số đo chạy trên chính máy này</b>";
+  }
+  return "khớp bảng tra: " + gpuName(currentGpuEntry()) + " · điểm " + Math.round(state.gpuIdx)
+       + (inDb && state.gpuMeasuredIdx ? " (số đo: " + state.gpuMeasuredIdx + ")" : "");
+}
+
 function vramLine(){
   const v = state.vramMeasured;
-  if(!v) return (state.igpu ? state.gpuVram + " GB chia từ RAM" : state.gpuVram + " GB VRAM") + vmLine();
+  const vram = state.gpuVram == null
+    ? "<b>đang đo VRAM…</b>"
+    : (state.igpu ? state.gpuVram + " GB dùng chung với RAM" : state.gpuVram + " GB VRAM");
+  if(!v) return vram + " · " + gpuSourceLine() + vmLine() + gpuListLine();
   return "<b>đo thật: cấp phát được " + v.gb.toFixed(1) + " GB</b> · " + vramWhy(v.verdict)
-       + (state.igpu ? " · gồm cả phần chia từ RAM hệ thống" : "") + vmLine();
+       + (state.igpu ? " · gồm cả phần chia từ RAM hệ thống" : "") + vmLine() + gpuListLine();
 }
 
 function batteryTag(){
@@ -1781,23 +2156,29 @@ function renderSpecs(){
   const cpuList = CPUS.map((c,i)=>({c,i})).filter(x =>
     state.cpuShowAll || isServerCpu(x.c) || !state.cores ||
     x.c[CPU_T] === state.cores || x.c[0] === state.cpuName);
-  const cpuOpts = cpuList.map(x=>{
+  let cpuOpts = cpuList.map(x=>{
     const label = isServerCpu(x.c)
       ? x.c[0] + " · " + (state.cores || "?") + " nhân ảo"
       : x.c[0] + " · " + x.c[CPU_T] + " luồng";
     return `<option value="${x.i}"${x.c[0]===state.cpuName?" selected":""}>${label}</option>`;
   }).join("");
+  // CPU bạn tự đưa vào mà bảng tra chưa có — vẫn phải hiện ra và giữ nguyên tên
+  if(state.cpuCustom){
+    cpuOpts = `<option value="custom" selected>${state.cpuName} · tên bạn đưa</option>` + cpuOpts;
+  }
   const ramOpts = [4,6,8,12,16,24,32,64].map(r=>`<option value="${r}"${r===state.ram?" selected":""}>${r} GB</option>`).join("");
   const powOpts = powerTable().map(p=>`<option value="${p[0]}"${p[0]===state.powerKey?" selected":""}>${p[3]}</option>`).join("");
   const vramOpts = [1,2,3,4,6,8,10,12].map(v=>`<option value="${v}"${v===state.gpuVram?" selected":""}>${v} GB</option>`).join("");
 
-  const benchTxt = state.benchU != null ? "điểm đo: " + state.benchU.toFixed(1) : "chưa đo được";
+  const benchTxt = state.benchU != null
+    ? "đo được " + state.benchU.toFixed(1) + (state.gpuMeasuredIdx ? " → " + state.gpuMeasuredIdx + " điểm" : "")
+    : "chưa đo được";
   const effIdx = Math.round(state.gpuIdx * state.powerG);
 
   $("specs").innerHTML = `
     <div class="spec">
       <span class="spec-k">Card đồ họa ${confTag(state.gpuConf)}</span>
-      <span class="spec-v">${gpuName(GPU_BY_KEY.get(state.gpuKey))}</span>
+      <span class="spec-v">${state.gpuRealName || gpuName(currentGpuEntry())}</span>
       <span class="spec-sub">${vramLine()} · sức mạnh ${effIdx}${effIdx !== Math.round(state.gpuIdx) ? " (gốc " + Math.round(state.gpuIdx) + ")" : ""} · ${benchTxt}</span>
       <select id="sel-gpu" aria-label="Chọn card đồ họa">${gpuOpts}</select>
     </div>
@@ -1809,11 +2190,15 @@ function renderSpecs(){
     </div>
     <div class="spec" style="grid-column:span 2">
       <span class="spec-k">Bộ xử lý ${confTag(state.cpuConf)}</span>
-      <span class="spec-v">${state.cpuName}</span>
+      <span class="spec-v">${cpuDisplayName()}</span>
       <span class="spec-sub">${cpuEvidenceLine()}</span>
-      ${state.cpuAlts && state.cpuAlts.length
-        ? `<span class="spec-sub">không tách được với: ${state.cpuAlts.join(", ")} — cùng loại chip</span>` : ""}
+      ${(state.cpuConf !== "ok" || (state.cpuAlts && state.cpuAlts.length))
+        ? `<span class="spec-sub">${state.cpuConf === "ok" ? "không tách được với" : "gần nhất"}: ${[state.cpuConf === "ok" ? null : state.cpuName].concat(state.cpuAlts || []).filter(Boolean).join(", ")} — cùng số nhân, cùng cache, FPS gần như y hệt</span>` : ""}
       <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--muted)">
+        <input type="checkbox" id="cpu-measured"${state.useMeasuredCpu?" checked":""}>
+        dùng điểm đo thật thay vì bảng tra <span style="opacity:.75">(đúng cả với CPU chưa có trong danh sách)</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)">
         <input type="checkbox" id="cpu-all"${state.cpuShowAll?" checked":""}> hiện cả CPU khác số luồng
       </label>
       <select id="sel-cpu" aria-label="Chọn bộ xử lý">${cpuOpts}</select>
@@ -1828,7 +2213,7 @@ function renderSpecs(){
       <span class="spec-k">VRAM chia cho iGPU ${state.vramUserSet ? '<span class="tag est">chọn tay</span>' : state.vramFrom ? '<span class="tag ok">suy ra</span>' : '<span class="tag est">mặc định</span>'}</span>
       <span class="spec-v">${state.gpuVram} GB</span>
       <span class="spec-sub">${vramDeriveLine()}</span>
-      <label style="display:block;margin-top:6px;font-size:12px;color:var(--muted)">
+      <label style="display:${state.handheld ? "block" : "none"};margin-top:6px;font-size:12px;color:var(--muted)">
         Task Manager báo máy có bao nhiêu GB “usable”?
         <input type="number" id="sel-visible" step="0.1" min="1" max="256" inputmode="decimal"
                value="${state.ramVisible != null ? state.ramVisible : ""}" placeholder="vd 11.7"
@@ -1875,10 +2260,21 @@ function renderSpecs(){
     state.powerKey = e.target.value; state.powerUserSet = true; syncPower(); render();
   });
   $("sel-cpu").addEventListener("change", e=>{
+    if(e.target.value === "custom") return;
     const c = CPUS[+e.target.value];
-    if(c){ state.cpuName = c[0]; state.cpuIdx = cpuGameIdx(c, state.cores); state.cpuConf = "ok"; state.cpuAlts = []; render(); }
+    if(c){
+      state.cpuCustom = false;
+      state.cpuName = c[0];
+      state.cpuDbIdx = cpuGameIdx(c, state.cores);
+      state.useMeasuredCpu = false;      // chọn tay tên chip thì dùng điểm của chip đó
+      state.cpuConf = "ok"; state.cpuAlts = [];
+      applyCpuIdx(); render();
+    }
   });
   $("cpu-all").addEventListener("change", e=>{ state.cpuShowAll = e.target.checked; render(); });
+  $("cpu-measured").addEventListener("change", e=>{
+    state.useMeasuredCpu = e.target.checked; applyCpuIdx(); render();
+  });
   $("sel-ram").addEventListener("change", e=>{
     state.ram = +e.target.value; state.ramConf = "ok"; render();
   });
@@ -2038,9 +2434,88 @@ $("cats").addEventListener("click", e=>{
 });
 $("rescan").addEventListener("click", scan);
 
-/* Đo sâu: cấp phát thật nên nặng máy — chỉ chạy khi người dùng bấm */
+function applyPastedSpecs(text){
+  const msg = $("pastemsg");
+  const p = parseSpecs(text);
+  const done = [];
+
+  if(p.cpu){
+    const hit = matchCpuByName(p.cpu);
+    if(hit){
+      state.cpuName = hit[0];
+      state.cpuDbIdx = cpuGameIdx(hit, state.cores);
+      state.useMeasuredCpu = false;
+      done.push("CPU khớp bảng tra");
+    }else{
+      // Chưa có trong bảng: giữ nguyên tên thật, sức mạnh lấy từ số đo
+      state.cpuName = p.cpu.replace(/\s+/g," ").trim();
+      state.cpuDbIdx = null;
+      state.useMeasuredCpu = true;
+      done.push("CPU lấy đúng tên bạn đưa, sức mạnh từ số đo");
+    }
+    state.cpuCustom = !hit;
+    state.cpuConf = "ok";
+    state.cpuAlts = [];
+    applyCpuIdx();
+  }
+
+  if(p.gpus.length){
+    const found = [];
+    for(const name of p.gpus){
+      const e = matchGpu(name);
+      found.push({entry:e, raw:name, vendor:/nvidia|geforce/i.test(name) ? "NVIDIA"
+        : /radeon|amd/i.test(name) ? "AMD" : /intel/i.test(name) ? "Intel" : null, sources:["bạn dán vào"]});
+    }
+    found.sort((a,b)=>{
+      const r = g => (g.entry && g.entry[2] > 0 && !g.entry[4] ? 100000 : 0) + (g.entry ? g.entry[1] : 60);
+      return r(b) - r(a);
+    });
+    state.gpuList = found;
+    if(found[0] && found[0].entry){ applyGpu(found[0].entry, "ok"); done.push("GPU: " + gpuName(found[0].entry)); }
+    else done.push("GPU chưa nhận ra tên, hãy chọn tay bên dưới");
+  }
+
+  if(p.ram){
+    state.ram = Math.round(p.ram);
+    state.ramConf = "ok";
+    done.push("RAM " + state.ram + " GB");
+  }
+  if(p.usable && p.ram){
+    state.ramVisible = p.usable;
+    const carve = Math.max(0, p.ram - p.usable - 0.3);
+    state.ramCarve = p.ram - p.usable;
+    if(state.igpu && !state.vramUserSet && carve >= 0.5){
+      const steps = [0.5,1,2,3,4,6,8,12,16];
+      state.gpuVram = steps.reduce((a,b)=>Math.abs(b-carve)<Math.abs(a-carve)?b:a, 0.5);
+      state.vramFrom = {installed:Math.round(p.ram), vram:state.gpuVram};
+      done.push("VRAM chia " + state.gpuVram + " GB");
+    }
+  }
+
+  if(done.length){
+    msg.className = "exact-msg";
+    msg.textContent = "✓ " + done.join(" · ");
+    render();
+    return true;
+  }
+  msg.className = "exact-msg bad";
+  msg.textContent = "Không đọc ra tên chip nào — thử gõ ngắn gọn, ví dụ: i5-11400H";
+  return false;
+}
+
+$("applypaste").addEventListener("click", ()=> applyPastedSpecs($("pastebox").value));
+
+/* Dán xong là áp dụng luôn, khỏi phải bấm nút */
+$("pastebox").addEventListener("paste", e=>{
+  const t = (e.clipboardData || window.clipboardData).getData("text");
+  if(t) setTimeout(()=> applyPastedSpecs(t), 0);
+});
+
+
+/* Đo sâu: cấp phát thật. Chạy tự động ngay sau khi kết quả đầu tiên đã hiện,
+   để không bắt người dùng chờ trắng màn hình. Bấm nút thì đo lại. */
 let deepRunning = false;
-$("deep").addEventListener("click", async ()=>{
+async function runDeep(){
   if(deepRunning || scanning) return;
   deepRunning = true;
   $("deep").disabled = true; $("rescan").disabled = true;
@@ -2096,7 +2571,8 @@ $("deep").addEventListener("click", async ()=>{
     deepRunning = false;
     render();
   }
-});
+}
+$("deep").addEventListener("click", runDeep);
 
 function vramWhy(v){
   return v === "oom" ? "driver báo hết bộ nhớ" : v === "evict" ? "texture cũ bị đẩy khỏi GPU"
@@ -2111,7 +2587,7 @@ $("copy").addEventListener("click", async ()=>{
   const up = UPSCALE.find(u=>u[0]===state.upscale) || UPSCALE[0];
   const lines = [
     "KẾT QUẢ KIỂM TRA CẤU HÌNH",
-    "GPU: " + gpuName(GPU_BY_KEY.get(state.gpuKey)) + " (" + state.gpuVram + " GB VRAM)",
+    "GPU: " + (state.gpuRealName || gpuName(currentGpuEntry())) + " (" + (state.gpuVram != null ? state.gpuVram + " GB VRAM" : "VRAM chưa rõ") + ")",
     "CPU: " + state.cpuName + " · " + state.cores + " luồng",
     "RAM: " + state.ram + " GB",
     "Chế độ nguồn: " + (powerTable().find(p=>p[0]===state.powerKey)||powerTable()[0])[3]
