@@ -1,0 +1,2145 @@
+<title>Máy Bạn Chơi Được Gì</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Saira+Condensed:wght@600;700&display=swap">
+<style>
+:root{
+  --ground:#e8ebe6;
+  --surface:#ffffff;
+  --surface-2:#f1f4ef;
+  --ink:#111a14;
+  --ink-2:#3c4a41;
+  --muted:#66766c;
+  --line:#cfd7cd;
+  --line-strong:#b3bfb2;
+  --accent:#8a5a0c;
+  --accent-bright:#a86e12;
+  --accent-wash:#f6ecd9;
+  --good:#1d7549;
+  --good-wash:#dff0e5;
+  --warn:#8a6100;
+  --warn-wash:#f7edd4;
+  --bad:#a63328;
+  --bad-wash:#f8e3e0;
+  --shadow:0 1px 2px rgba(16,30,20,.06), 0 8px 24px -16px rgba(16,30,20,.35);
+  --f-display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0b100d;
+    --surface:#141b16;
+    --surface-2:#1b241d;
+    --ink:#e4ebe4;
+    --ink-2:#b6c3b8;
+    --muted:#849287;
+    --line:#26332a;
+    --line-strong:#374538;
+    --accent:#e2a744;
+    --accent-bright:#f2bb5c;
+    --accent-wash:#2a2113;
+    --good:#4cc186;
+    --good-wash:#12281d;
+    --warn:#e0b445;
+    --warn-wash:#2a2312;
+    --bad:#ef7d6f;
+    --bad-wash:#2e1917;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0b100d;
+  --surface:#141b16;
+  --surface-2:#1b241d;
+  --ink:#e4ebe4;
+  --ink-2:#b6c3b8;
+  --muted:#849287;
+  --line:#26332a;
+  --line-strong:#374538;
+  --accent:#e2a744;
+  --accent-bright:#f2bb5c;
+  --accent-wash:#2a2113;
+  --good:#4cc186;
+  --good-wash:#12281d;
+  --warn:#e0b445;
+  --warn-wash:#2a2312;
+  --bad:#ef7d6f;
+  --bad-wash:#2e1917;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+
+/* ---------- header ---------- */
+.eyebrow{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;
+}
+h1{
+  font-family:var(--f-display);font-weight:700;font-size:clamp(34px,7vw,56px);
+  line-height:1.02;letter-spacing:-.01em;margin-top:8px;
+}
+.lede{color:var(--ink-2);max-width:60ch;margin-top:12px}
+.lede b{color:var(--ink);font-weight:600}
+
+/* ---------- scan bar ---------- */
+.scanbar{
+  margin-top:24px;background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.scanbar-top{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:14px 16px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+.dot.run{animation:pulse 1.1s ease-in-out infinite}
+.dot.done{background:var(--good)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+@media (prefers-reduced-motion:reduce){.dot.run{animation:none}}
+.scan-status{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2);flex:1 1 220px;min-width:0}
+.progress{height:3px;background:var(--surface-2);position:relative}
+.progress i{position:absolute;inset:0 auto 0 0;width:0;background:var(--accent);transition:width .35s ease}
+
+/* ---------- cảnh báo môi trường chạy ---------- */
+.envwarn{
+  margin-top:10px;border:1px solid var(--line);border-left:3px solid var(--warn);
+  background:var(--warn-wash);border-radius:4px;padding:12px 15px;font-size:13.5px;line-height:1.6;
+}
+.envwarn b{color:var(--ink)}
+.envwarn code{
+  font-family:var(--f-mono);font-size:12px;background:var(--surface);
+  padding:2px 6px;border-radius:2px;color:var(--ink);border:1px solid var(--line);
+  display:inline-block;margin-top:4px;
+}
+
+/* ---------- buttons ---------- */
+button{font-family:inherit;font-size:14px;cursor:pointer}
+.btn{
+  border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);
+  padding:8px 14px;border-radius:3px;font-weight:600;transition:border-color .15s,background .15s;
+}
+.btn:hover{border-color:var(--accent);background:var(--accent-wash)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+:root[data-theme="dark"] .btn.primary{color:#14100a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#14100a}}
+.btn.primary:hover{background:var(--accent-bright);border-color:var(--accent-bright)}
+.btn:focus-visible,select:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- spec plate ---------- */
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:40px 0 14px}
+h2{font-family:var(--f-display);font-weight:700;font-size:23px;letter-spacing:.01em}
+.section-note{font-size:12.5px;color:var(--muted);font-family:var(--f-mono)}
+
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.spec{background:var(--surface);padding:14px 15px 15px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.spec-k{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px}
+.spec-v{font-weight:600;font-size:15.5px;line-height:1.35;overflow-wrap:anywhere}
+.spec-sub{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.tag{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;padding:1px 5px;border-radius:2px;font-weight:600;text-transform:uppercase}
+.tag.ok{background:var(--good-wash);color:var(--good)}
+.tag.est{background:var(--warn-wash);color:var(--warn)}
+.tag.no{background:var(--bad-wash);color:var(--bad)}
+
+select{
+  font-family:var(--f-body);font-size:13.5px;font-weight:500;color:var(--ink);
+  background:var(--surface-2);border:1px solid var(--line-strong);border-radius:3px;
+  padding:5px 8px;max-width:100%;margin-top:4px;
+}
+
+/* ---------- verdict ---------- */
+.verdict{
+  margin-top:18px;border:1px solid var(--line);border-left:3px solid var(--accent);
+  background:var(--surface);border-radius:4px;padding:18px 20px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;
+}
+.verdict-main{flex:1 1 300px;min-width:0}
+.verdict-title{font-family:var(--f-display);font-size:27px;font-weight:700;line-height:1.1}
+.verdict-sub{color:var(--ink-2);font-size:14px;margin-top:6px}
+.tiles{display:flex;gap:26px;flex-wrap:wrap}
+.tile-n{font-family:var(--f-mono);font-size:27px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile-l{font-size:11.5px;color:var(--muted);font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- controls ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;margin:14px 0 16px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--line);border-radius:4px}
+.ctl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ctl > span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.chip{
+  border:1px solid var(--line-strong);background:transparent;color:var(--ink-2);
+  padding:5px 11px;border-radius:99px;font-size:13px;font-weight:500;transition:.15s;
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+
+/* ---------- game rows ---------- */
+.rows{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)}
+.row{
+  display:grid;grid-template-columns:1fr 128px 108px;gap:14px;align-items:center;
+  padding:11px 16px;border-top:1px solid var(--line);
+}
+.row:first-child{border-top:0}
+.row-head{background:var(--surface-2);padding-block:8px}
+.row-head span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.g-name{font-weight:600;font-size:14.5px;line-height:1.25}
+.g-note{font-size:12px;color:var(--muted);margin-top:2px}
+.g-note b{color:var(--ink-2);font-weight:500}
+.fpsbox{text-align:right}
+.fps{font-family:var(--f-mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.fps small{font-size:10.5px;color:var(--muted);font-weight:400;margin-left:2px}
+.meter{height:3px;background:var(--surface-2);border-radius:2px;margin-top:5px;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:2px}
+.pill{
+  font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:2px;text-align:center;
+  font-family:var(--f-mono);letter-spacing:.02em;white-space:nowrap;
+}
+.p-great{background:var(--good-wash);color:var(--good)}
+.p-ok{background:var(--good-wash);color:var(--good)}
+.p-mid{background:var(--warn-wash);color:var(--warn)}
+.p-bad{background:var(--bad-wash);color:var(--bad)}
+.c-great,.c-ok{color:var(--good)}
+.c-mid{color:var(--warn)}
+.c-bad{color:var(--bad)}
+.b-great,.b-ok{background:var(--good)}
+.b-mid{background:var(--warn)}
+.b-bad{background:var(--bad)}
+
+.stale{opacity:.45}
+
+/* ---------- notes ---------- */
+.notes{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+.note h3{font-family:var(--f-display);font-size:15px;font-weight:700;letter-spacing:.02em;margin-bottom:5px}
+.note p{font-size:13px;color:var(--muted);line-height:1.6}
+.note code{font-family:var(--f-mono);font-size:11.5px;background:var(--surface-2);padding:1px 4px;border-radius:2px;color:var(--ink-2)}
+
+@media (max-width:620px){
+  .row{grid-template-columns:1fr 84px;gap:10px}
+  .row .pill-cell{grid-column:2;text-align:right}
+  .row-head .pill-cell{display:none}
+  .verdict{gap:16px}
+  .tiles{gap:20px}
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Kiểm tra cấu hình · không cần cài đặt</p>
+    <h1>Máy bạn chơi được game gì?</h1>
+    <p class="lede">Trình duyệt tự đọc GPU, CPU, RAM và màn hình của bạn, chạy một bài benchmark ngắn, rồi ước lượng FPS cho <b id="gcount">49 tựa game</b> đang hot. <b>Không cài phần mềm, không gửi dữ liệu đi đâu</b> — mọi phép tính chạy ngay trong tab này.</p>
+  </header>
+
+  <div class="scanbar">
+    <div class="scanbar-top">
+      <span class="dot run" id="dot"></span>
+      <span class="scan-status" id="status">Đang khởi động trình quét…</span>
+      <button class="btn primary" id="rescan" type="button">Quét lại</button>
+      <button class="btn" id="deep" type="button">Đo thật RAM &amp; VRAM</button>
+      <button class="btn" id="copy" type="button">Chép kết quả</button>
+    </div>
+    <div class="progress"><i id="bar"></i></div>
+  </div>
+  <div class="envwarn" id="envwarn" hidden></div>
+
+  <div class="section-head">
+    <h2>Cấu hình máy bạn</h2>
+    <span class="section-note">Sai chỗ nào? Chọn lại bên dưới →</span>
+  </div>
+  <div class="specs" id="specs"></div>
+
+  <div class="section-head">
+    <h2>Kết quả</h2>
+    <span class="section-note" id="reflabel">dữ liệu mẫu</span>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-main">
+      <div class="verdict-title" id="v-title">Đang tính…</div>
+      <div class="verdict-sub" id="v-sub">Chờ trình quét đọc xong phần cứng.</div>
+    </div>
+    <div class="tiles">
+      <div><div class="tile-n" id="t-smooth">—</div><div class="tile-l">game ≥60 FPS</div></div>
+      <div><div class="tile-n" id="t-play">—</div><div class="tile-l">chơi được</div></div>
+      <div><div class="tile-n" id="t-no">—</div><div class="tile-l">không nổi</div></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label class="ctl"><span>Độ phân giải</span>
+      <select id="res">
+        <option value="720">1280 × 720 (HD)</option>
+        <option value="800">1280 × 800 (máy cầm tay)</option>
+        <option value="1080" selected>1920 × 1080 (Full HD)</option>
+        <option value="1440">2560 × 1440 (2K)</option>
+        <option value="2160">3840 × 2160 (4K)</option>
+      </select>
+    </label>
+    <label class="ctl"><span>Thiết lập đồ họa</span>
+      <select id="preset">
+        <option value="low">Thấp</option>
+        <option value="med">Trung bình</option>
+        <option value="high" selected>Cao</option>
+        <option value="ultra">Rất cao / Ultra</option>
+      </select>
+    </label>
+    <label class="ctl"><span>FSR / DLSS</span>
+      <select id="upscale"></select>
+    </label>
+    <div class="ctl"><span>Lọc thể loại</span>
+      <div class="chips" id="cats">
+        <button class="chip" type="button" data-cat="all" aria-pressed="true">Tất cả</button>
+        <button class="chip" type="button" data-cat="es" aria-pressed="false">eSports &amp; Online</button>
+        <button class="chip" type="button" data-cat="aaa" aria-pressed="false">Offline / AAA</button>
+        <button class="chip" type="button" data-cat="light" aria-pressed="false">Nhẹ &amp; giả lập</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rows" id="rows"></div>
+
+  <div class="notes">
+    <div class="note">
+      <h3>Số liệu lấy ở đâu ra</h3>
+      <p>Tên GPU đọc từ <code>WEBGL_debug_renderer_info</code> và <code>navigator.gpu</code>, rồi đối chiếu bảng ~160 card (điểm 3DMark Time Spy quy đổi, mốc RTX 3060 = 100). Khi Windows chỉ báo tên chung chung như "AMD Radeon Graphics", trang tra thêm mã thiết bị PCI trong chuỗi đó để biết đúng đời chip. FPS = <code>min(giới hạn GPU, giới hạn CPU)</code> nhân hệ số TDP, preset, độ phân giải và FSR, trừ điểm khi thiếu VRAM hoặc RAM.</p>
+    </div>
+    <div class="note">
+      <h3>Nhận dạng CPU kiểu gì</h3>
+      <p>Không API nào trả về tên CPU, nên trang <b>đo đặc điểm rồi loại trừ</b>: số luồng từ <code>hardwareConcurrency</code>; chạy T/2 rồi T worker để xem tăng bao nhiêu — tăng ~25% nghĩa là có siêu phân luồng, suy ra số nhân thật; so độ lệch tốc độ giữa các worker để phát hiện nhân lớn/nhân nhỏ kiểu Intel 12th+; đo độ trễ pointer-chase để lấy dung lượng L2/L3 (Zen 4 có 1 MB L2 mỗi nhân, Raptor Lake 2 MB, Skylake 256 KB). Cuối cùng, iGPU tiết lộ luôn dòng chip — Radeon 780M chỉ có trên AMD Phoenix.</p>
+    </div>
+    <div class="note">
+      <h3>Nút “Đo thật RAM &amp; VRAM”</h3>
+      <p>Không API nào trả về hai con số này — <code>deviceMemory</code> bị chặn cứng ở 8 GB và VRAM thì không có API nào cả. Nên trang <b>đo bằng cách cấp phát thật</b>. VRAM: tạo texture 64 MB liên tiếp trên GPU, cứ vài vòng lại xoá một texture cũ và bấm giờ — khi driver hết chỗ và bắt đầu đẩy texture sang RAM hệ thống, thời gian vọt lên gấp mấy lần, đó là mốc VRAM. RAM: xin từng khối 256 MB rồi chạm vào mọi trang 4 KB, dừng ngay khi hệ điều hành bắt đầu đẩy ra ổ cứng, nên ra được <b>phần đang trống</b>, cộng thêm phần Windows đang giữ thì ra con số Task Manager hiển thị. Hai phép này nặng, có thể làm màn hình chớp, vì vậy phải bấm nút chứ không tự chạy.</p>
+    </div>
+    <div class="note">
+      <h3>VRAM của máy dùng iGPU</h3>
+      <p>Chip liền không có VRAM riêng — BIOS cắt sẵn một phần RAM cho GPU <b>trước khi Windows đếm</b>, nên Task Manager báo thiếu đúng bằng phần đã cắt. Máy 16 GB chia 4 GB cho iGPU thì Windows chỉ thấy <b>11.7 GB</b> (còn ~0.3 GB nữa là phần cứng giữ lại). Trang làm ngược phép trừ đó: nhập số Task Manager báo, nó suy ra ngay RAM thật và VRAM đã cắt. Với máy này, phép cấp phát GPU <i>không</i> dùng để đoán VRAM, vì nó cấp được cả phần mượn từ RAM hệ thống nên luôn ra số lớn hơn thực tế.</p>
+    </div>
+    <div class="note">
+      <h3>Máy ảo và VPS</h3>
+      <p>Trong máy ảo, <code>hardwareConcurrency</code> chỉ là <b>lát cắt vCPU</b> máy chủ cấp cho bạn — 6 luồng của một con Xeon 48 luồng — nên không thể lọc theo số luồng như máy thật. Khi phát hiện máy ảo, trang mở khoá nhóm <b>CPU máy chủ</b> (Xeon Scalable, EPYC, Threadripper) và tính điểm game <i>động</i> theo số nhân được cấp, vì game chỉ dùng được vài nhân đầu. GPU thì phân biệt hai trường hợp: <b>card màn hình ảo</b> (VMware SVGA, QXL, Hyper-V, SwiftShader) không có GPU thật nên game 3D bất khả thi, còn <b>passthrough hay vGPU</b> (Tesla T4, A10, L4, RTX A4000) là GPU thật gán thẳng vào máy, chỉ hao khoảng 5%.</p>
+    </div>
+    <div class="note">
+      <h3>Máy chơi game cầm tay</h3>
+      <p>ROG Ally, Legion Go, Steam Deck, MSI Claw dùng chip liền (APU) nên <b>mức điện mới quyết định FPS</b>, không phải tên chip: cùng một Z1 Extreme, chạy 9 W và 30 W chênh nhau hơn gấp đôi. Trang có riêng ô chọn TDP, ô chia VRAM và ô FSR — RAM chia cho iGPU bao nhiêu thì phần còn lại cho game bị trừ bấy nhiêu.</p>
+    </div>
+    <div class="note">
+      <h3>Sai số</h3>
+      <p>Những CPU cùng một con chip (Z1 Extreme, 7840U, 8840HS đều là AMD Phoenix 8 nhân) thì <b>không có cách nào tách nhau qua trình duyệt</b> — trang liệt kê hết thay vì chọn bừa một cái. FPS là ước lượng, không phải đo thật: lệch ±15% là bình thường; laptop cắm sạc hay không, nhiệt độ, driver và RAM chạy 1 thanh hay 2 thanh đều làm thay đổi kết quả. Firefox và Safari che tên GPU nên hãy dùng Chrome hoặc Edge để quét chính xác nhất.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ===================================================================
+   1. CƠ SỞ DỮ LIỆU GPU
+   idx = điểm hiệu năng, quy chuẩn RTX 3060 = 100 (từ 3DMark Time Spy)
+   vram tính bằng GB
+   =================================================================== */
+const GPUS = [
+  // --- NVIDIA RTX 50 ---
+  ["rtx 5090",550,32],["rtx 5080",356,16],["rtx 5070 ti",305,16],["rtx 5070",247,12],
+  ["rtx 5060 ti",178,16],["rtx 5060",144,8],["rtx 5050",105,8],
+  ["rtx 5090 laptop",300,24],["rtx 5080 laptop",250,16],["rtx 5070 ti laptop",200,12],
+  ["rtx 5070 laptop",172,8],["rtx 5060 laptop",132,8],["rtx 5050 laptop",95,8],
+  // --- NVIDIA RTX 40 ---
+  ["rtx 4090",414,24],["rtx 4080 super",328,16],["rtx 4080",316,16],
+  ["rtx 4070 ti super",270,16],["rtx 4070 ti",259,12],["rtx 4070 super",230,12],["rtx 4070",205,12],
+  ["rtx 4060 ti",156,8],["rtx 4060",125,8],
+  ["rtx 4090 laptop",247,16],["rtx 4080 laptop",213,12],["rtx 4070 laptop",155,8],
+  ["rtx 4060 laptop",121,8],["rtx 4050 laptop",90,6],
+  // --- NVIDIA RTX 30 ---
+  ["rtx 3090 ti",247,24],["rtx 3090",218,24],["rtx 3080 ti",213,12],["rtx 3080",199,10],
+  ["rtx 3070 ti",164,8],["rtx 3070",155,8],["rtx 3060 ti",132,8],["rtx 3060",100,12],
+  ["rtx 3050 ti",78,4],["rtx 3050",71,8],
+  ["rtx 3080 ti laptop",150,16],["rtx 3080 laptop",138,16],["rtx 3070 ti laptop",122,8],
+  ["rtx 3070 laptop",115,8],["rtx 3060 laptop",94,6],["rtx 3050 ti laptop",66,4],["rtx 3050 laptop",60,4],
+  // --- NVIDIA RTX 20 / GTX 16 ---
+  ["rtx 2080 ti",163,11],["rtx 2080 super",132,8],["rtx 2080",124,8],["rtx 2070 super",118,8],
+  ["rtx 2070",106,8],["rtx 2060 super",99,8],["rtx 2060",86,6],
+  ["rtx 2070 laptop",88,8],["rtx 2060 laptop",75,6],
+  ["gtx 1660 ti",72,6],["gtx 1660 super",70,6],["gtx 1660",66,6],
+  ["gtx 1650 super",57,4],["gtx 1650",41,4],["gtx 1630",26,4],
+  ["gtx 1660 ti laptop",60,6],["gtx 1650 ti laptop",42,4],["gtx 1650 laptop",38,4],
+  // --- NVIDIA GTX 10 & cũ ---
+  ["gtx 1080 ti",113,11],["gtx 1080",84,8],["gtx 1070 ti",76,8],["gtx 1070",70,8],
+  ["gtx 1060 6gb",49,6],["gtx 1060 3gb",46,3],["gtx 1060",48,6],["gtx 1050 ti",29,4],["gtx 1050",23,2],
+  ["gtx 980 ti",73,6],["gtx 980",63,4],["gtx 970",49,3.5],["gtx 960",30,2],["gtx 950",26,2],
+  ["gtx 780",38,3],["gtx 770",33,2],["gtx 760",26,2],["gtx 750 ti",16,2],["gtx 750",13,1],
+  ["gtx 680",30,2],["gtx 660",19,2],["gt 1030",15,2],["gt 730",5,2],["gt 710",3,1],
+  ["quadro p1000",22,4],["quadro t1000",45,4],["tesla",60,8],
+  // --- AMD RX 9000 / 7000 ---
+  ["rx 9070 xt",282,16],["rx 9070",247,16],["rx 9060 xt",155,16],
+  ["rx 7900 xtx",345,24],["rx 7900 xt",293,20],["rx 7900 gre",241,16],
+  ["rx 7800 xt",207,16],["rx 7700 xt",172,12],["rx 7650 gre",128,8],["rx 7600 xt",128,16],["rx 7600",121,8],
+  // --- AMD RX 6000 ---
+  ["rx 6950 xt",232,16],["rx 6900 xt",218,16],["rx 6800 xt",201,16],["rx 6800",178,16],
+  ["rx 6750 xt",144,12],["rx 6700 xt",132,12],["rx 6700",118,10],["rx 6650 xt",106,8],
+  ["rx 6600 xt",99,8],["rx 6600",84,8],["rx 6500 xt",49,4],["rx 6400",37,4],
+  // --- AMD RX 5000 & cũ ---
+  ["rx 5700 xt",103,8],["rx 5700",92,8],["rx 5600 xt",80,6],["rx 5500 xt",54,8],
+  ["rx 590",53,8],["rx 580",49,8],["rx 570",43,8],["rx 560",22,4],["rx 550",15,2],
+  ["rx 480",47,8],["rx 470",41,4],["rx 460",20,2],
+  ["r9 390",44,8],["r9 380",31,4],["r9 290",38,4],["r7 370",24,2],["r7 260",14,2],["vega 64",73,8],["vega 56",63,8],
+  // --- Intel Arc ---
+  ["arc b580",167,12],["arc b570",144,10],["arc a770",147,16],["arc a750",132,8],
+  ["arc a580",109,8],["arc a380",52,6],["arc a310",30,4],
+  // --- Máy chơi game cầm tay (điểm tính ở mức TDP mặc định) ---
+  ["z2 extreme",48,0,"AMD Ryzen Z2 Extreme — ROG Ally 2 / Legion Go 2","hh"],
+  ["z1 extreme",33,0,"AMD Ryzen Z1 Extreme — ROG Ally, Ally X, Legion Go","hh"],
+  ["z2 go",25,0,"AMD Ryzen Z2 Go — Legion Go S","hh"],
+  ["z1 non",14,0,"AMD Ryzen Z1 — ROG Ally bản thường","hh"],
+  ["steam deck",15,0,"Steam Deck / Steam Deck OLED","hh"],
+  ["msi claw",24,0,"MSI Claw — Intel Arc iGPU","hh"],
+  // --- iGPU ---
+  ["radeon 890m",48,0],["radeon 880m",41,0],["radeon 780m",40,0],["radeon 760m",31,0],
+  ["radeon 740m",22,0],["radeon 680m",33,0],["radeon 660m",22,0],["radeon 610m",6,0],
+  ["vega 11",16,0],["vega 8",13,0],["vega 7",12,0],["vega 6",10,0],["vega 3",6,0],
+  ["radeon graphics",12,0],
+  ["arc 140v",45,0],["arc 130v",36,0],["arc graphics",38,0],
+  ["iris xe",18,0],["iris plus",10,0],["iris pro",7,0],
+  ["uhd graphics 770",8,0],["uhd graphics 750",7,0],["uhd graphics 730",6,0],
+  ["uhd graphics 630",5,0],["uhd graphics 620",4.5,0],["uhd graphics 600",2.5,0],["uhd graphics",5,0],
+  ["hd graphics 630",5,0],["hd graphics 620",4.5,0],["hd graphics 530",4,0],
+  ["hd graphics 520",3.5,0],["hd graphics 4600",2.6,0],["hd graphics 4000",2,0],["hd graphics",2,0],
+  // --- Apple ---
+  ["m4 max",276,24],["m4 pro",161,16],["m4",92,10],
+  ["m3 max",241,24],["m3 pro",132,12],["m3",80,10],
+  ["m2 max",218,20],["m2 pro",126,12],["m2",71,10],
+  ["m1 ultra",260,32],["m1 max",195,20],["m1 pro",109,12],["m1",61,8],
+  // --- GPU trung tâm dữ liệu & chuyên dụng (hay gặp khi passthrough vào máy ảo) ---
+  ["l40s",290,48,"NVIDIA L40S — máy chủ","dc"],
+  ["rtx 6000 ada",330,48,"NVIDIA RTX 6000 Ada","dc"],
+  ["rtx 5000 ada",250,32,"NVIDIA RTX 5000 Ada","dc"],
+  ["rtx 4000 ada",170,20,"NVIDIA RTX 4000 Ada","dc"],
+  ["a100",165,40,"NVIDIA A100 — máy chủ","dc"],
+  ["a10g",150,24,"NVIDIA A10G — AWS G5","dc"],
+  ["a10",150,24,"NVIDIA A10 — máy chủ","dc"],
+  ["a16",70,16,"NVIDIA A16 — vGPU","dc"],
+  ["l4",125,24,"NVIDIA L4 — máy chủ","dc"],
+  ["rtx a6000",215,48,"NVIDIA RTX A6000","dc"],
+  ["rtx a5000",190,24,"NVIDIA RTX A5000","dc"],
+  ["rtx a4000",140,16,"NVIDIA RTX A4000","dc"],
+  ["rtx a2000",95,12,"NVIDIA RTX A2000","dc"],
+  ["tesla v100",135,16,"NVIDIA Tesla V100","dc"],
+  ["tesla p100",85,16,"NVIDIA Tesla P100","dc"],
+  ["tesla t4",75,16,"NVIDIA Tesla T4","dc"],
+  ["tesla p40",70,24,"NVIDIA Tesla P40","dc"],
+  ["tesla p4",45,8,"NVIDIA Tesla P4","dc"],
+  ["tesla m60",45,8,"NVIDIA Tesla M60","dc"],
+  ["grid k520",25,4,"NVIDIA GRID K520","dc"],
+  ["quadro rtx 5000",150,16,"NVIDIA Quadro RTX 5000","dc"],
+  ["quadro rtx 4000",110,8,"NVIDIA Quadro RTX 4000","dc"],
+  ["quadro p4000",70,8,"NVIDIA Quadro P4000","dc"],
+  ["quadro m4000",40,8,"NVIDIA Quadro M4000","dc"],
+  ["radeon pro v520",80,8,"AMD Radeon Pro V520 — AWS","dc"],
+  ["radeon pro w6800",150,32,"AMD Radeon Pro W6800","dc"],
+  ["instinct mi25",90,16,"AMD Instinct MI25","dc"],
+  // --- Card màn hình ảo: không có GPU thật, chỉ dựng hình bằng CPU ---
+  ["vmware svga",1,1,"VMware SVGA — không có GPU thật","vd"],
+  ["virtualbox graphics",1,1,"VirtualBox — không có GPU thật","vd"],
+  ["virgl",2,1,"VirGL / QEMU — GPU ảo","vd"],
+  ["qxl",1,1,"QXL / SPICE — không có GPU thật","vd"],
+  ["hyper-v video",1,1,"Hyper-V — không có GPU thật","vd"],
+  ["remote display",1,1,"Remote Desktop — không có GPU thật","vd"],
+  ["parsec virtual display",1,1,"Parsec Virtual Display","vd"],
+  // --- fallback: dựng hình bằng phần mềm ---
+  ["swiftshader",1,1,"SwiftShader — dựng hình bằng CPU","vd"],
+  ["llvmpipe",1,1,"llvmpipe — dựng hình bằng CPU","vd"],
+  ["microsoft basic render",1,1,"Microsoft Basic Render — không có GPU","vd"]
+];
+
+/* Mã thiết bị PCI → nhận diện iGPU khi Windows chỉ báo "AMD Radeon Graphics" */
+const DEVICE_IDS = {
+  "15bf":"radeon 780m",  // Phoenix1 — cũng chính là Z1 Extreme / 7840U / 8840U
+  "15c8":"radeon 740m",  // Phoenix2
+  "150e":"radeon 890m",  // Strix Point
+  "164e":"radeon 610m",  // Raphael (2 CU)
+  "163f":"steam deck",   // Van Gogh
+  "1681":"radeon 680m",  // Rembrandt
+  "1638":"vega 8",       // Cezanne
+  "1636":"vega 8",       // Renoir
+  "164c":"vega 8"        // Lucienne
+};
+
+/* Chế độ nguồn — hệ số nhân cho GPU và CPU */
+const POWER_HANDHELD = [
+  ["9",  0.50,0.58,"9 W · tiết kiệm pin"],
+  ["13", 0.66,0.70,"13 W · Silent (dùng pin)"],
+  ["15", 0.74,0.78,"15 W"],
+  ["20", 0.88,0.89,"20 W"],
+  ["25", 1.00,1.00,"25 W · Performance (mặc định)"],
+  ["30", 1.12,1.08,"30 W · Turbo (cắm sạc)"],
+  ["35", 1.20,1.12,"35 W · tùy chỉnh / dock"]
+];
+const POWER_NORMAL = [
+  ["max", 1.00,1.00,"Cắm điện · hiệu năng cao"],
+  ["bal", 0.85,0.90,"Cân bằng"],
+  ["sav", 0.60,0.70,"Dùng pin · tiết kiệm"]
+];
+
+/* Công nghệ nâng cấp độ phân giải (FSR / DLSS / XeSS) — chỉ giúp phần nghẽn GPU */
+const UPSCALE = [
+  ["off",1.00,"Tắt"],
+  ["q",  1.45,"Chất lượng (Quality)"],
+  ["b",  1.65,"Cân bằng (Balanced)"],
+  ["p",  1.95,"Hiệu năng (Performance)"]
+];
+/* Các game không có FSR/DLSS (hoặc không cần) */
+const NO_UPSCALE = new Set([
+  "Liên Minh Huyền Thoại","Valorant","Counter-Strike 2","Dota 2","Rocket League",
+  "Rainbow Six Siege","Đột Kích (CrossFire)","Roblox","Minecraft Java","Stardew Valley",
+  "Liên Quân / Free Fire (giả lập)","Liên Minh: Tốc Chiến (giả lập)","eFootball",
+  "Genshin Impact","Honkai: Star Rail","Zenless Zone Zero","EA Sports FC 25",
+  "It Takes Two","Sekiro: Shadows Die Twice","GTA V","Overwatch 2"
+]);
+
+/* Hiển thị tên đẹp */
+function prettyGpu(key){
+  return key
+    .replace(/\brtx\b/i,"RTX").replace(/\bgtx\b/i,"GTX").replace(/\bgt\b/i,"GT")
+    .replace(/\brx\b/i,"RX").replace(/\br9\b/i,"R9").replace(/\br7\b/i,"R7")
+    .replace(/\bxtx\b/i,"XTX").replace(/\bxt\b/i,"XT").replace(/\bti\b/i,"Ti")
+    .replace(/\bgre\b/i,"GRE").replace(/\bsuper\b/i,"Super").replace(/\blaptop\b/i,"Laptop")
+    .replace(/\barc\b/i,"Arc").replace(/\buhd\b/i,"UHD").replace(/\bhd\b/i,"HD")
+    .replace(/\biris\b/i,"Iris").replace(/\bxe\b/i,"Xe").replace(/\bvega\b/i,"Vega")
+    .replace(/\bradeon\b/i,"Radeon").replace(/\bgraphics\b/i,"Graphics").replace(/\bquadro\b/i,"Quadro")
+    .replace(/\bm(\d)\b/i,(_,d)=>"M"+d).replace(/\bpro\b/i,"Pro").replace(/\bmax\b/i,"Max")
+    .replace(/\bultra\b/i,"Ultra").replace(/\bgb\b/i,"GB");
+}
+function gpuLabel(key){
+  const p = prettyGpu(key);
+  if(/^(RTX|GTX|GT) /.test(p)) return "NVIDIA GeForce " + p;
+  if(/^(RX|R9|R7|Radeon|Vega)/.test(p)) return "AMD " + p;
+  if(/^(Arc|UHD|HD|Iris)/.test(p)) return "Intel " + p;
+  if(/^M\d/.test(p)) return "Apple " + p;
+  return p;
+}
+
+/* ===================================================================
+   2. CƠ SỞ DỮ LIỆU CPU
+   [tên, điểm game, số luồng, số nhân, điểm đơn nhân, L2 mỗi nhân (KB), L3 (MB), cờ]
+   Điểm quy chuẩn i5-12400F = 100 · cờ "h" = nhân lớn/nhỏ, "arm" = chip ARM
+   =================================================================== */
+const CPUS = [
+  // ---- AMD để bàn ----
+  ["Ryzen 9 9950X3D",168,32,16,125,1024,64],
+  ["Ryzen 9 9950X",150,32,16,124,1024,64],
+  ["Ryzen 7 9800X3D",165,16,8,122,1024,96],
+  ["Ryzen 7 9700X",132,16,8,122,1024,32],
+  ["Ryzen 5 9600X",130,12,6,120,1024,32],
+  ["Ryzen 9 7950X3D",152,32,16,118,1024,128],
+  ["Ryzen 9 7950X",135,32,16,120,1024,64],
+  ["Ryzen 9 7900X",130,24,12,119,1024,64],
+  ["Ryzen 7 7800X3D",150,16,8,112,1024,96],
+  ["Ryzen 7 7700X",125,16,8,118,1024,32],
+  ["Ryzen 5 7600X",122,12,6,117,1024,32],
+  ["Ryzen 5 7600",120,12,6,115,1024,32],
+  ["Ryzen 5 7500F",118,12,6,113,1024,32],
+  ["Ryzen 7 5800X3D",125,16,8,100,512,96],
+  ["Ryzen 7 5700X3D",118,16,8,96,512,96],
+  ["Ryzen 9 5900X",105,24,12,105,512,64],
+  ["Ryzen 7 5800X",102,16,8,102,512,32],
+  ["Ryzen 7 5700X",100,16,8,96,512,32],
+  ["Ryzen 5 5600X",100,12,6,98,512,32],
+  ["Ryzen 5 5600",98,12,6,96,512,32],
+  ["Ryzen 5 5500",82,12,6,92,512,16],
+  ["Ryzen 7 3700X",82,16,8,82,512,32],
+  ["Ryzen 5 3600",78,12,6,82,512,32],
+  ["Ryzen 3 3100",62,8,4,80,512,16],
+  ["Ryzen 5 2600",60,12,6,72,512,16],
+  ["Ryzen 5 1600",52,12,6,65,512,16],
+  ["FX-8300",28,8,8,42,2048,8],
+  // ---- AMD laptop & máy cầm tay ----
+  ["Ryzen AI 9 HX 370",120,24,12,118,1024,24,"h"],
+  ["Ryzen AI 9 365",112,20,10,115,1024,24,"h"],
+  ["Ryzen Z2 Extreme — ROG Ally 2",105,16,8,115,1024,24,"h"],
+  ["Ryzen 9 8945HS",116,16,8,113,1024,16],
+  ["Ryzen 9 7940HS",115,16,8,112,1024,16],
+  ["Ryzen 7 8845HS",112,16,8,110,1024,16],
+  ["Ryzen 7 7840HS",110,16,8,110,1024,16],
+  ["Ryzen 7 8840U",96,16,8,108,1024,16],
+  ["Ryzen 7 7840U",95,16,8,107,1024,16],
+  ["Ryzen Z1 Extreme — ROG Ally / Legion Go",92,16,8,106,1024,16],
+  ["Ryzen 7 7735HS",100,16,8,100,512,16],
+  ["Ryzen 7 6800H",98,16,8,100,512,16],
+  ["Ryzen 7 5800H",92,16,8,92,512,16],
+  ["Ryzen 7 4800H",80,16,8,80,512,8],
+  ["Ryzen 5 7640HS",95,12,6,105,1024,16],
+  ["Ryzen 5 7535HS",90,12,6,98,512,16],
+  ["Ryzen 5 5600H",85,12,6,92,512,16],
+  ["Ryzen Z1 — ROG Ally bản thường",68,12,6,100,1024,16],
+  ["Ryzen Z2 Go — Legion Go S",72,8,4,95,512,16],
+  ["Steam Deck APU (Van Gogh)",45,8,4,62,512,4],
+  // ---- Intel để bàn ----
+  ["Core i9-14900K",145,32,24,135,2048,36,"h"],
+  ["Core i7-14700K",138,28,20,130,2048,33,"h"],
+  ["Core i5-14600K",130,20,14,122,2048,24,"h"],
+  ["Core i5-14400F",112,16,10,112,2048,20,"h"],
+  ["Core i9-13900K",140,32,24,130,2048,36,"h"],
+  ["Core i7-13700K",133,24,16,126,2048,30,"h"],
+  ["Core i5-13600K",125,20,14,120,2048,24,"h"],
+  ["Core i5-13400F",110,16,10,110,1280,20,"h"],
+  ["Core i9-12900K",128,24,16,118,1280,30,"h"],
+  ["Core i7-12700K",120,20,12,115,1280,25,"h"],
+  ["Core i5-12600K",115,16,10,113,1280,20,"h"],
+  ["Core i5-12400F",100,12,6,100,1280,18],
+  ["Core i3-12100F",88,8,4,102,1280,12],
+  ["Core Ultra 9 285K",140,24,24,132,3072,36,"h"],
+  ["Core Ultra 7 265K",135,20,20,128,3072,30,"h"],
+  ["Core Ultra 5 245K",125,14,14,124,3072,24,"h"],
+  ["Core i7-11700",92,16,8,98,512,16],
+  ["Core i5-11400F",84,12,6,92,512,12],
+  ["Core i9-10900K",100,20,10,100,256,20],
+  ["Core i7-10700K",92,16,8,97,256,16],
+  ["Core i5-10400F",74,12,6,88,256,12],
+  ["Core i3-10100",62,8,4,88,256,6],
+  ["Core i9-9900K",95,16,8,95,256,16],
+  ["Core i7-9700K",80,8,8,95,256,12],
+  ["Core i5-9400F",66,6,6,85,256,9],
+  ["Core i3-9100F",55,4,4,88,256,6],
+  ["Core i7-8700K",85,12,6,92,256,12],
+  ["Core i5-8400",68,6,6,85,256,9],
+  ["Core i7-7700",70,8,4,86,256,8],
+  ["Core i5-7500",50,4,4,82,256,6],
+  ["Core i7-6700",62,8,4,80,256,8],
+  ["Core i5-6500",45,4,4,78,256,6],
+  ["Core i7-4790",55,8,4,76,256,8],
+  ["Core i5-4460",38,4,4,68,256,6],
+  ["Pentium G4560",32,4,2,70,256,3],
+  ["Celeron / Pentium đời cũ",18,2,2,45,256,2],
+  // ---- Intel laptop ----
+  ["Core i9-14900HX",140,32,24,128,2048,36,"h"],
+  ["Core i7-14650HX",125,24,16,120,2048,30,"h"],
+  ["Core i7-13700H",108,20,14,115,1280,24,"h"],
+  ["Core i7-13620H",105,16,10,115,1280,24,"h"],
+  ["Core i5-13420H",88,12,8,105,1280,12,"h"],
+  ["Core i7-12700H",105,20,14,110,1280,24,"h"],
+  ["Core i5-12500H",98,16,12,108,1280,18,"h"],
+  ["Core i5-12450H",85,12,8,100,1280,12,"h"],
+  ["Core Ultra 7 155H — MSI Claw",90,22,16,108,2048,24,"h"],
+  ["Core Ultra 7 258V",92,8,8,112,2560,12,"h"],
+  ["Core i7-11800H",90,16,8,95,1280,24],
+  ["Core i7-10750H",78,12,6,90,256,12],
+  ["Core i5-10300H",65,8,4,88,256,8],
+  ["Core i7-9750H",72,12,6,88,256,12],
+  // ---- ARM ----
+  ["Snapdragon X Elite",85,12,12,100,12288,6,"arm"],
+  ["Apple M-series",110,10,10,120,4096,8,"arm"],
+  // ---- CPU máy chủ / máy ảo ----
+  // Số luồng để 0 = tuỳ ý, vì máy ảo chỉ cấp một lát cắt của con chip thật.
+  // Điểm game tính động: điểm đơn nhân × hệ số theo số nhân được cấp.
+  ["Xeon Platinum 8488C (Sapphire Rapids)",0,0,0,105,2048,105,"s"],
+  ["Xeon Platinum 8375C (Ice Lake)",0,0,0,88,1280,54,"s"],
+  ["Xeon Platinum 8370C (Ice Lake)",0,0,0,86,1280,48,"s"],
+  ["Xeon Platinum 8272CL (Cascade Lake)",0,0,0,72,1024,36,"s"],
+  ["Xeon Platinum 8171M (Skylake-SP)",0,0,0,68,1024,35,"s"],
+  ["Xeon Platinum 8168 (Skylake-SP)",0,0,0,66,1024,33,"s"],
+  ["Xeon Gold 6248R (Cascade Lake)",0,0,0,76,1024,35,"s"],
+  ["Xeon Gold 6230 (Cascade Lake)",0,0,0,66,1024,28,"s"],
+  ["Xeon Silver 4210 (Cascade Lake)",0,0,0,60,1024,14,"s"],
+  ["Xeon E5-2699 v4 (Broadwell)",0,0,0,52,256,55,"s"],
+  ["Xeon E5-2680 v4 (Broadwell)",0,0,0,52,256,35,"s"],
+  ["Xeon E5-2673 v4 (Broadwell)",0,0,0,54,256,50,"s"],
+  ["Xeon E5-2690 v3 (Haswell)",0,0,0,50,256,30,"s"],
+  ["Xeon E5-2680 v3 (Haswell)",0,0,0,48,256,30,"s"],
+  ["Xeon E5-2680 v2 (Ivy Bridge)",0,0,0,45,256,25,"s"],
+  ["Xeon E5-2670 (Sandy Bridge)",0,0,0,42,256,20,"s"],
+  ["Xeon W-2295 (Cascade Lake)",0,0,0,82,1024,24,"s"],
+  ["Xeon E-2288G (Coffee Lake)",0,0,0,92,256,16,"s"],
+  ["EPYC Genoa 9004 (Zen 4)",0,0,0,100,1024,384,"s"],
+  ["EPYC Milan-X 7003X (Zen 3 + 3D cache)",0,0,0,80,512,768,"s"],
+  ["EPYC Milan 7003 (Zen 3)",0,0,0,82,512,256,"s"],
+  ["EPYC 7V13 (Azure, Zen 3)",0,0,0,80,512,256,"s"],
+  ["EPYC Rome 7002 (Zen 2)",0,0,0,68,512,256,"s"],
+  ["EPYC Naples 7001 (Zen 1)",0,0,0,52,512,64,"s"],
+  ["Threadripper 7980X (Zen 4)",0,0,0,118,1024,256,"s"],
+  ["Threadripper 5975WX (Zen 3)",0,0,0,105,512,128,"s"],
+  ["Threadripper 3970X (Zen 2)",0,0,0,95,512,128,"s"],
+  ["CPU máy ảo không rõ đời",0,0,0,70,512,32,"s"]
+];
+
+/* Game chỉ dùng được vài nhân đầu — thêm nhân nữa gần như không tăng FPS */
+function coreScale(n){
+  if(!n || n < 1) return 1;
+  if(n <= 1) return 0.38;
+  if(n <= 2) return 0.62;
+  if(n <= 3) return 0.76;
+  if(n <= 4) return 0.87;
+  if(n <= 5) return 0.95;
+  if(n <= 7) return 1.00;
+  if(n <= 11) return 1.05;
+  return 1.10;
+}
+const isServerCpu = c => (c[7] || "").includes("s");
+/* CPU máy chủ: điểm game phụ thuộc số nhân máy ảo cấp, nên tính lúc chọn */
+function cpuGameIdx(c, cores){
+  if(isServerCpu(c)) return Math.round(c[4] * coreScale(cores || 4));
+  return c[1];
+}
+const CPU_T = 2, CPU_CORES = 3, CPU_ST = 4, CPU_L2 = 5, CPU_L3 = 6, CPU_FLAG = 7;
+
+/* iGPU tiết lộ luôn dòng CPU — Radeon 780M chỉ có trên chip AMD Phoenix, v.v. */
+const CPU_HINTS = {
+  "z1 extreme":   ["Ryzen Z1 Extreme — ROG Ally / Legion Go","Ryzen 7 7840U","Ryzen 7 8840U"],
+  "radeon 780m":  ["Ryzen Z1 Extreme — ROG Ally / Legion Go","Ryzen 7 7840U","Ryzen 7 8840U","Ryzen 7 7840HS","Ryzen 7 8845HS","Ryzen 9 7940HS","Ryzen 9 8945HS"],
+  "radeon 760m":  ["Ryzen 5 7640HS"],
+  "radeon 740m":  ["Ryzen Z1 — ROG Ally bản thường"],
+  "radeon 890m":  ["Ryzen AI 9 HX 370","Ryzen AI 9 365"],
+  "radeon 880m":  ["Ryzen AI 9 365","Ryzen AI 9 HX 370"],
+  "z2 extreme":   ["Ryzen Z2 Extreme — ROG Ally 2"],
+  "z2 go":        ["Ryzen Z2 Go — Legion Go S"],
+  "z1 non":       ["Ryzen Z1 — ROG Ally bản thường"],
+  "steam deck":   ["Steam Deck APU (Van Gogh)"],
+  "msi claw":     ["Core Ultra 7 155H — MSI Claw"],
+  "radeon 680m":  ["Ryzen 7 6800H"],
+  "vega 8":       ["Ryzen 7 5800H","Ryzen 5 5600H","Ryzen 7 4800H"],
+  "vega 7":       ["Ryzen 5 5600H","Ryzen 5 7535HS"],
+  "vega 11":      ["Ryzen 5 3600"],
+  "arc 140v":     ["Core Ultra 7 258V"],
+  "arc 130v":     ["Core Ultra 7 258V"],
+  "arc graphics": ["Core Ultra 7 155H — MSI Claw"],
+  "iris xe":      ["Core i7-11800H","Core i5-12450H","Core i7-12700H"],
+  "uhd graphics 770":["Core i5-12400F","Core i5-13400F","Core i9-13900K","Core i5-12600K"],
+  "uhd graphics 750":["Core i7-11700"],
+  "uhd graphics 730":["Core i5-12400F","Core i5-13400F"],
+  "uhd graphics 630":["Core i5-9400F","Core i7-9700K","Core i7-8700K","Core i5-8400","Core i9-9900K"],
+  "uhd graphics 620":["Core i5-10300H"],
+  "hd graphics 630": ["Core i7-7700","Core i5-7500"],
+  "hd graphics 530": ["Core i7-6700","Core i5-6500"],
+  "hd graphics 4600":["Core i7-4790","Core i5-4460"]
+};
+/* Hãng CPU suy ra từ iGPU — card rời thì không nói lên gì */
+const VENDOR_OF = {amd:/^(Ryzen|FX|Steam Deck)/, intel:/^(Core|Pentium|Celeron)/, arm:/^(Snapdragon|Apple)/};
+
+/* ===================================================================
+   3. CƠ SỞ DỮ LIỆU GAME
+   g = FPS trên mỗi 1 điểm GPU (mốc: 1080p, thiết lập Cao)
+   c = FPS trên mỗi 1 điểm CPU
+   cap = trần FPS của engine · vram/ram = nhu cầu GB · min = điểm GPU tối thiểu
+   =================================================================== */
+const GAMES = [
+  // ---- eSports & Online ----
+  ["Liên Minh Huyền Thoại","es",4.6,4.0,300,2,8,3],
+  ["Valorant","es",3.5,4.0,400,2,8,5],
+  ["Counter-Strike 2","es",3.3,3.0,400,4,8,12],
+  ["Dota 2","es",3.0,2.6,300,3,8,8],
+  ["Rocket League","es",3.4,3.2,250,3,8,6],
+  ["Rainbow Six Siege","es",3.0,2.6,300,4,8,10],
+  ["Overwatch 2","es",2.6,2.5,400,4,8,15],
+  ["Apex Legends","es",1.8,1.9,300,5,12,20],
+  ["Fortnite","es",1.7,2.0,240,4,8,15],
+  ["EA Sports FC 25","es",1.55,1.8,200,5,8,15],
+  ["Genshin Impact","es",1.5,1.8,120,4,8,12],
+  ["Zenless Zone Zero","es",1.5,1.7,120,4,8,12],
+  ["Honkai: Star Rail","es",1.4,1.6,120,4,8,12],
+  ["PUBG: Battlegrounds","es",1.5,1.6,200,5,12,20],
+  ["Delta Force","es",1.35,1.6,200,5,12,25],
+  ["Naraka: Bladepoint","es",1.15,1.4,200,5,12,25],
+  ["Battlefield 2042","es",1.1,1.4,200,6,12,30],
+  ["Call of Duty: Warzone / BO6","es",1.05,1.4,240,7,12,35],
+  ["Marvel Rivals","es",1.0,1.3,240,6,16,30],
+  ["Wuthering Waves","es",1.0,1.3,120,5,12,20],
+  // ---- Offline / AAA ----
+  ["Sekiro: Shadows Die Twice","aaa",1.6,1.6,60,4,8,12],
+  ["Forza Horizon 5","aaa",1.4,1.7,200,6,12,20],
+  ["GTA V","aaa",1.35,1.5,187,4,8,12],
+  ["Resident Evil 4 Remake","aaa",1.3,1.6,200,6,16,25],
+  ["Palworld","aaa",1.3,1.2,200,6,16,25],
+  ["Ghost of Tsushima","aaa",1.2,1.4,200,6,16,25],
+  ["God of War Ragnarök","aaa",1.1,1.4,200,7,16,30],
+  ["Sons of the Forest","aaa",1.1,1.2,200,6,16,25],
+  ["Elden Ring","aaa",1.0,1.2,60,6,12,25],
+  ["Baldur's Gate 3","aaa",1.0,1.1,200,6,16,25],
+  ["Dying Light 2","aaa",1.0,1.3,200,6,12,25],
+  ["Horizon Zero Dawn Remastered","aaa",1.0,1.3,200,7,16,25],
+  ["The Witcher 3 (Next-Gen)","aaa",0.95,1.3,200,6,12,20],
+  ["Marvel's Spider-Man 2","aaa",0.9,1.2,200,7,16,30],
+  ["Hogwarts Legacy","aaa",0.9,1.0,200,7,16,30],
+  ["Red Dead Redemption 2","aaa",0.85,1.2,200,6,12,25],
+  ["Cyberpunk 2077","aaa",0.72,1.2,200,7,12,30],
+  ["Silent Hill 2 Remake","aaa",0.6,1.0,200,8,16,40],
+  ["Black Myth: Wukong","aaa",0.5,1.0,200,8,16,45],
+  ["Assassin's Creed Shadows","aaa",0.5,0.9,200,8,16,45],
+  ["Monster Hunter Wilds","aaa",0.45,0.8,200,9,16,50],
+  // ---- Nhẹ & giả lập ----
+  ["Stardew Valley","light",8.0,6.0,240,1,4,1],
+  ["Đột Kích (CrossFire)","light",6.0,5.0,300,2,4,2],
+  ["Roblox","light",3.0,3.0,240,2,4,3],
+  ["Liên Quân / Free Fire (giả lập)","light",2.5,2.0,120,3,8,5],
+  ["Liên Minh: Tốc Chiến (giả lập)","light",2.6,2.2,120,3,8,6],
+  ["Minecraft Java","light",2.2,2.4,260,3,8,4],
+  ["eFootball","light",2.2,2.2,120,4,8,10],
+  ["It Takes Two","light",2.2,2.2,200,4,8,10]
+].map(a=>({n:a[0],cat:a[1],g:a[2],c:a[3],cap:a[4],vram:a[5],ram:a[6],min:a[7]}));
+
+const PRESET_G = {low:1.55, med:1.22, high:1.0, ultra:0.80};
+const PRESET_C = {low:1.15, med:1.05, high:1.0, ultra:0.95};
+const PRESET_V = {low:0.70, med:0.85, high:1.0, ultra:1.20};
+const RES_G    = {720:1.45, 800:1.38, 1080:1.0, 1440:0.66, 2160:0.40};
+const RES_V    = {720:0.90, 800:0.92, 1080:1.0, 1440:1.15, 2160:1.35};
+const RES_LABEL= {720:"720p", 800:"800p", 1080:"1080p", 1440:"2K", 2160:"4K"};
+const PRESET_LABEL = {low:"Thấp", med:"Trung bình", high:"Cao", ultra:"Ultra"};
+
+/* ===================================================================
+   4. TRẠNG THÁI
+   =================================================================== */
+const state = {
+  scanned:false,
+  gpuKey:"rtx 3060", gpuIdx:100, gpuVram:12, gpuRaw:"", gpuConf:"est",
+  handheld:false, igpu:false, powerKey:"max", powerG:1, powerC:1, upscale:"off",
+  cpuName:"Core i5-12400F", cpuIdx:100, cores:12, cpuConf:"est", cpuMeasured:null,
+  cpuAlts:[], cpuShowAll:false, evidence:null, arch:null,
+  battery:null, batteryHooked:false, powerUserSet:false, bandwidth:null, throttle:1,
+  vramMeasured:null, ramFree:null, ramVisible:null, vramFrom:null, vramUserSet:false,
+  vm:null,
+  ram:16, ramConf:"est",
+  screen:"1920 × 1080", hz:60, screenConf:"est",
+  os:"Windows", osConf:"est",
+  disk:null,
+  benchU:null,
+  cat:"all"
+};
+
+const $ = id => document.getElementById(id);
+
+/* ===================================================================
+   5. DÒ PHẦN CỨNG
+   =================================================================== */
+function normalize(s){
+  return String(s||"").toLowerCase()
+    .replace(/\(r\)|\(tm\)|®|™/g," ")
+    .replace(/\(0x[0-9a-f]+\)/g," ")
+    .replace(/angle|direct3d\d*|vs_\d_\d|ps_\d_\d|opengl|metal renderer|d3d\d*|vulkan|pcie|sse2/g," ")
+    .replace(/nvidia|advanced micro devices|amd|intel|apple|corporation|inc\.?|geforce|\bradeon\b(?= *(rx|r9|r7|vega))/g," ")
+    .replace(/laptop gpu|mobile|max-?q( design)?/g," laptop ")
+    .replace(/[^a-z0-9 .]/g," ")
+    .replace(/\s+/g," ").trim();
+}
+
+/* Nhận diện máy ảo từ chuỗi tên GPU và các dấu hiệu khác.
+   Phân biệt hai trường hợp hoàn toàn khác nhau:
+   - card màn hình ảo: không có GPU thật, mọi game đều bất khả thi
+   - passthrough / vGPU: GPU thật được gán thẳng vào máy ảo, chạy gần như nguyên tốc */
+function detectVM(raw){
+  const s = String(raw || "").toLowerCase();
+  const virtualDisplay = /vmware|virtualbox|virgl|qxl|hyper-?v|basic render|remote display|swiftshader|llvmpipe|parallels|microsoft rdp/.test(s);
+  const datacenter = /tesla|grid|\bvgpu\b|quadro|\ba100\b|\ba10g?\b|\bl4\b|\bl40s?\b|rtx a\d|instinct|radeon pro v/.test(s);
+  const hv = /vmware|virtualbox|qemu|kvm|hyper-?v|xen|parallels|virtio|red hat/.test(s);
+  return {
+    isVM: virtualDisplay || datacenter || hv,
+    virtualDisplay,
+    passthrough: datacenter && !virtualDisplay,
+    kind: virtualDisplay ? "vd" : datacenter ? "dc" : hv ? "hv" : null
+  };
+}
+
+const GPU_BY_KEY = new Map(GPUS.map(g => [g[0], g]));
+const gpuName = e => (e && e[3]) ? e[3] : gpuLabel(e ? e[0] : "");
+const isHandheld = e => !!(e && e[4] === "hh");
+const isIntegrated = e => !!e && e[2] === 0;
+
+function matchGpu(raw){
+  const n = " " + normalize(raw) + " ";
+  let best = null;
+  for(const g of GPUS){
+    if(n.includes(" " + g[0] + " ")){
+      if(!best || g[0].length > best[0].length) best = g;
+    }
+  }
+  if(!best){
+    // thử lại không cần khoảng trắng biên (vd "...rtx 4060" nằm cuối chuỗi)
+    for(const g of GPUS){
+      if(n.includes(g[0]) && (!best || g[0].length > best[0].length)) best = g;
+    }
+  }
+  // Tên chung chung ("AMD Radeon Graphics") → tra mã thiết bị PCI để biết đúng đời chip
+  const generic = !best || best[0] === "radeon graphics" || best[0] === "arc graphics"
+               || best[0] === "uhd graphics" || best[0] === "hd graphics";
+  if(generic){
+    const m = /0x0*([0-9a-f]{4})\b/i.exec(String(raw));
+    if(m){
+      const byId = GPU_BY_KEY.get(DEVICE_IDS[m[1].toLowerCase()]);
+      if(byId) return byId;
+    }
+  }
+  return best;
+}
+
+function readWebGL(){
+  try{
+    const c = document.createElement("canvas");
+    const gl = c.getContext("webgl2") || c.getContext("webgl") || c.getContext("experimental-webgl");
+    if(!gl) return null;
+    const dbg = gl.getExtension("WEBGL_debug_renderer_info");
+    const r = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    return r ? String(r) : null;
+  }catch(e){ return null; }
+}
+
+async function readWebGPU(){
+  try{
+    if(!navigator.gpu) return null;
+    const ad = await navigator.gpu.requestAdapter({powerPreference:"high-performance"});
+    if(!ad) return null;
+    const info = ad.info || (ad.requestAdapterInfo ? await ad.requestAdapterInfo() : null);
+    if(!info) return null;
+    return [info.description, info.device, info.architecture, info.vendor].filter(Boolean).join(" ");
+  }catch(e){ return null; }
+}
+
+function measureHz(){
+  return new Promise(res=>{
+    const t = []; let stop = false;
+    setTimeout(()=>{stop=true;}, 1200);
+    function frame(ts){
+      t.push(ts);
+      if(t.length < 45 && !stop) requestAnimationFrame(frame);
+      else{
+        if(t.length < 6) return res(60);
+        const d = [];
+        for(let i=1;i<t.length;i++) d.push(t[i]-t[i-1]);
+        d.sort((a,b)=>a-b);
+        const med = d[Math.floor(d.length/2)] || 16.67;
+        const hz = 1000/med;
+        const common = [30,50,60,75,90,100,120,144,165,170,180,200,240,280,360,480,540];
+        let nearest = common.reduce((p,x)=>Math.abs(x-hz)<Math.abs(p-hz)?x:p, 60);
+        res(Math.abs(nearest-hz) < hz*0.12 ? nearest : Math.round(hz));
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+/* --- Nhân benchmark, dùng chung cho luồng chính và worker --- */
+function kernel(iters){
+  var x = 123456789 >>> 0, y = 362436069 >>> 0, acc = 0.0;
+  for(var i=0;i<iters;i++){
+    x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0;
+    y = (y * 1664525 + 1013904223) >>> 0;
+    acc += (x ^ y) * 2.3283064365386963e-10;
+    acc = acc - (acc | 0);
+  }
+  return acc;
+}
+
+/* Đo đơn luồng trên luồng chính: lấy lần nhanh nhất trong 3 lần để bớt nhiễu */
+function benchSingle(){
+  kernel(3e5); // hâm nóng JIT
+  let iters = 1e6, ms = 0;
+  for(let i=0;i<8 && ms<60;i++){ iters *= 2; const t0 = performance.now(); kernel(iters); ms = performance.now()-t0; }
+  let best = iters/(ms/1000);
+  for(let r=0;r<2;r++){
+    const t0 = performance.now(); kernel(iters); const m = performance.now()-t0;
+    best = Math.max(best, iters/(m/1000));
+  }
+  return best;
+}
+
+/* Nhân thứ hai: 4 chuỗi độc lập nên một luồng đã lấp đầy đơn vị tính của nhân.
+   Siêu phân luồng gần như không giúp gì → mốc gãy khi vượt số nhân thật rất rõ. */
+function kernelILP(iters){
+  var a=1,b=2,c=3,d=4,s0=0,s1=0,s2=0,s3=0;
+  for(var i=0;i<iters;i++){
+    a ^= a<<13; a>>>=0; a ^= a>>>17; a ^= a<<5; a>>>=0;
+    b ^= b<<13; b>>>=0; b ^= b>>>17; b ^= b<<5; b>>>=0;
+    c ^= c<<13; c>>>=0; c ^= c>>>17; c ^= c<<5; c>>>=0;
+    d ^= d<<13; d>>>=0; d ^= d>>>17; d ^= d<<5; d>>>=0;
+    s0 = (s0 + (a&255))|0; s1 = (s1 + (b&255))|0;
+    s2 = (s2 + (c&255))|0; s3 = (s3 + (d&255))|0;
+  }
+  return (s0^s1^s2^s3)>>>0;
+}
+
+/* --- Đo đa luồng bằng Web Worker: suy ra SMT và nhân lớn/nhỏ --- */
+const WORKER_SRC = kernel.toString() + kernelILP.toString() + `
+self.onmessage = function(e){
+  var f = e.data.ilp ? kernelILP : kernel;
+  var t0 = performance.now();
+  var a = f(e.data.iters);
+  self.postMessage({ms: performance.now() - t0, a: a});
+};`;
+
+let workerUrl = null;
+function getWorkerUrl(){
+  if(workerUrl === null){
+    try{ workerUrl = URL.createObjectURL(new Blob([WORKER_SRC], {type:"text/javascript"})); }
+    catch(e){ workerUrl = false; }
+  }
+  return workerUrl;
+}
+
+async function runParallel(n, iters, ilp){
+  const url = getWorkerUrl();
+  if(!url) return null;
+  const ws = [];
+  try{
+    for(let i=0;i<n;i++) ws.push(new Worker(url));
+    // hâm nóng từng worker trước khi bấm giờ
+    await Promise.all(ws.map(w => new Promise(res => { w.onmessage = () => res(); w.postMessage({iters:2e5, ilp}); })));
+    const t0 = performance.now();
+    const times = await Promise.all(ws.map(w => new Promise(res => { w.onmessage = ev => res(ev.data.ms); w.postMessage({iters, ilp}); })));
+    const wall = performance.now() - t0;
+    return {throughput: n*iters/(wall/1000), times};
+  }catch(e){
+    return null;
+  }finally{
+    ws.forEach(w => { try{ w.terminate(); }catch(e){} });
+  }
+}
+
+/* Chạy 1 luồng → T/2 luồng → T luồng và đọc cấu trúc CPU từ tỉ lệ tăng */
+async function probeTopology(threads, stOps){
+  // Dùng nhân 4 chuỗi độc lập: một luồng đã bão hòa nhân, nên vượt số nhân thật là gãy rõ
+  const iters = Math.max(1e6, Math.round(stOps * 0.06));
+  const one  = await runParallel(1, iters, true);
+  if(!one) return {ok:false};
+  const half = threads >= 4 ? await runParallel(Math.floor(threads/2), iters, true) : one;
+  const full = await runParallel(threads, iters, true);
+  if(!half || !full) return {ok:false};
+
+  // Nhân lớn/nhỏ: chạy đầy tải thì worker nhanh nhất và chậm nhất lệch hẳn nhau
+  const ts = full.times.slice().sort((a,b)=>a-b);
+  const fast = ts[Math.floor(ts.length*0.2)], slow = ts[Math.floor(ts.length*0.8)];
+  const spread = slow/fast;
+
+  // Từ T/2 lên T luồng: gần gấp đôi = nhân thật; chỉ nhích lên = hai luồng chung một nhân
+  const smtRatio = full.throughput / half.throughput;
+
+  const hybrid = spread > 1.5;
+  const smt = !hybrid && threads >= 4 && smtRatio < 1.62;
+  const cores = hybrid ? null : (smt ? threads/2 : threads);
+
+  return {
+    ok:true, hybrid, smt, cores, spread, smtRatio,
+    mtOps: full.throughput,
+    scaling: full.throughput / one.throughput
+  };
+}
+
+/* --- Đo dung lượng cache bằng pointer-chase: L2/L3 phân biệt được đời chip --- */
+function probeCache(){
+  const sizesKB = [8,16,24,32,48,64,96,128,192,256,384,512,768,1024,1536,2048,3072,4096,6144,8192,12288,16384,24576,32768];
+  const line = 16;            // 16 × Int32 = 64 byte = 1 dòng cache
+  const curve = [];
+  try{
+    for(const kb of sizesKB){
+      const n = kb*256;                      // số phần tử Int32
+      const m = Math.floor(n/line);
+      if(m < 8) continue;
+      const a = new Int32Array(n);
+      const idx = new Int32Array(m);
+      for(let i=0;i<m;i++) idx[i] = i;
+      // xáo trộn để chặn bộ tiên đoán nạp trước
+      let s = 88675123 >>> 0;
+      for(let i=m-1;i>0;i--){
+        s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0;
+        const j = s % (i+1);
+        const t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+      }
+      for(let i=0;i<m;i++) a[idx[i]*line] = idx[(i+1)%m]*line;
+      const steps = kb <= 1024 ? 1500000 : 400000;
+      let p = 0;
+      for(let i=0;i<m;i++) p = a[p];          // hâm nóng
+      const t0 = performance.now();
+      for(let i=0;i<steps;i++) p = a[p];
+      const ns = (performance.now()-t0)*1e6/steps;
+      if(p === -1) console.log(p);            // chặn trình tối ưu bỏ luôn vòng lặp
+      curve.push([kb, ns]);
+    }
+  }catch(e){ return null; }
+  const pts = curve.filter(Boolean);
+  if(pts.length < 6) return null;
+
+  // Bậc nhảy = ranh giới một mức cache. Bậc đầu là L1, rồi L2, rồi L3.
+  // Gộp các bậc liền nhau vì có mức chuyển dần chứ không dứt khoát.
+  const steps = [];
+  for(let i=1;i<pts.length;i++){
+    const r = pts[i][1] / pts[i-1][1];
+    if(r > 1.35){
+      if(steps.length && pts[i-1][0] <= steps[steps.length-1]*2) steps[steps.length-1] = pts[i-1][0];
+      else steps.push(pts[i-1][0]);
+    }
+  }
+  const ok = (v,lo,hi) => (v != null && v >= lo && v <= hi) ? v : null;
+  const l1 = ok(steps[0], 8, 128);                                      // KB
+  const l2 = ok(steps[1], 192, 8192);                                   // KB
+  const l3 = steps[2] ? ok(Math.round(steps[2]/1024), 2, 256) : null;   // MB
+  return {curve:pts, l1, l2, l3, steps, dram: pts[pts.length-1][1]};
+}
+
+/* Benchmark GPU: shader nặng render vào framebuffer ngoài màn hình */
+function benchGpu(){
+  try{
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const gl = c.getContext("webgl", {antialias:false, powerPreference:"high-performance", preserveDrawingBuffer:false});
+    if(!gl) return null;
+    const vs = `attribute vec2 p; varying vec2 uv; void main(){ uv = p*0.5+0.5; gl_Position = vec4(p,0.0,1.0); }`;
+    const fs = `precision highp float; varying vec2 uv;
+      void main(){
+        vec2 c = uv*2.6 - vec2(1.8,1.3);
+        vec2 z = vec2(0.0); float m = 0.0;
+        for(int i=0;i<128;i++){
+          z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+          m += dot(z,z)*1e-4;
+        }
+        gl_FragColor = vec4(fract(m), fract(m*0.7), 0.5, 1.0);
+      }`;
+    function sh(type,src){ const s = gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s);
+      if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) throw new Error("shader"); return s; }
+    const prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER,vs));
+    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER,fs));
+    gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) return null;
+    gl.useProgram(prog);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog,"p");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    gl.viewport(0,0,256,256);
+    const px = new Uint8Array(4);
+    const flush = ()=> gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,px);
+
+    for(let i=0;i<3;i++) gl.drawArrays(gl.TRIANGLES,0,3);
+    flush();
+
+    let draws = 8, elapsed = 0;
+    for(let pass=0; pass<9; pass++){
+      const t0 = performance.now();
+      for(let i=0;i<draws;i++) gl.drawArrays(gl.TRIANGLES,0,3);
+      flush();
+      elapsed = performance.now() - t0;
+      if(elapsed > 120) break;
+      draws = Math.max(draws*2, Math.ceil(draws * 160 / Math.max(elapsed,0.4)));
+      if(draws > 400000) break;
+    }
+    if(elapsed <= 0) return null;
+    // tỉ pixel-vòng lặp mỗi giây
+    return (draws * 256 * 256 * 128) / (elapsed/1000) / 1e9;
+  }catch(e){ return null; }
+}
+
+/* Ước lượng thô từ điểm benchmark khi không nhận ra tên GPU */
+function tierFromBench(u){
+  const t = [[3,6],[8,15],[20,30],[40,55],[70,80],[110,110],[170,150],[250,200],[400,270]];
+  for(const [lim,idx] of t) if(u < lim) return idx;
+  return 350;
+}
+
+/* ===================================================================
+   NHẬN DẠNG CPU — chấm điểm mọi ứng viên theo bằng chứng đo được.
+   Số luồng là bộ lọc cứng; gợi ý từ iGPU là bằng chứng mạnh nhất;
+   cấu trúc nhân và cache thu hẹp tiếp; benchmark chỉ dùng để xếp hạng.
+   =================================================================== */
+function identifyCpu(ev){
+  const hints = CPU_HINTS[state.gpuKey] || [];
+  const hintSet = new Set(hints);
+  const scored = [];
+
+  for(const c of CPUS){
+    let penalty = 0;
+    const flag = c[CPU_FLAG] || "";
+    const server = isServerCpu(c);
+
+    // 1. Số luồng — bằng chứng chắc chắn nhất, TRỪ khi đang chạy máy ảo:
+    //    máy ảo chỉ cấp một lát cắt nên số luồng không khớp con chip thật.
+    if(ev.threads && !server){
+      if(c[CPU_T] !== ev.threads) penalty += (ev.vm ? 120 : 900) + Math.abs(c[CPU_T]-ev.threads)*8;
+    }
+    // CPU máy chủ chỉ hợp lý khi thật sự đang ở trong máy ảo
+    if(server) penalty += ev.vm ? -260 : 420;
+    // 2. Chip ARM hay x86
+    if(ev.arch === "arm" && flag !== "arm") penalty += 800;
+    if(ev.arch === "x86" && flag === "arm") penalty += 800;
+    // 3. Nhân lớn/nhỏ (máy ảo che mất cấu trúc này nên bỏ qua)
+    if(!server && !ev.vm){
+      if(ev.hybrid === true  && flag !== "h") penalty += 260;
+      if(ev.hybrid === false && flag === "h") penalty += 260;
+      // 4. Số nhân vật lý suy ra từ SMT
+      if(ev.cores && !ev.hybrid && c[CPU_CORES] !== ev.cores) penalty += 200;
+    }
+    // 5. Cache — phân biệt đời chip rất tốt (Zen4 L2 1 MB, Raptor 2 MB, Skylake 256 KB)
+    if(ev.l2) penalty += Math.min(180, Math.abs(Math.log2(c[CPU_L2]/ev.l2)) * 110);
+    if(ev.l3) penalty += Math.min(90,  Math.abs(Math.log2(c[CPU_L3]/ev.l3)) * 55);
+    // 6. Gợi ý từ iGPU: Radeon 780M ⇒ chắc chắn là chip AMD Phoenix
+    if(hintSet.size){
+      if(hintSet.has(c[0])) penalty -= 500 - hints.indexOf(c[0])*15;
+      else penalty += 220;
+    }
+    // 7. Điểm đo — chỉ để xếp hạng trong nhóm đã lọc
+    if(ev.stIndex) penalty += Math.min(120, Math.abs(c[CPU_ST] - ev.stIndex) * 1.4);
+
+    scored.push({c, penalty});
+  }
+  scored.sort((a,b)=>a.penalty-b.penalty);
+
+  const top = scored[0];
+  // Các ứng viên sát nút = cùng loại chip, không thể tách bằng trình duyệt
+  const alts = scored.slice(1).filter(s => s.penalty - top.penalty < 120).slice(0,3).map(s=>s.c[0]);
+  // Độ tin cậy: lọc được đến đâu
+  let conf = "est";
+  if(ev.threads && hintSet.size && alts.length <= 3) conf = "ok";
+  else if(ev.threads && (ev.cores || ev.hybrid !== null) && ev.l2) conf = "ok";
+
+  return {cpu: top.c, alts, conf, spread: scored[1] ? scored[1].penalty - top.penalty : 999};
+}
+
+/* Áp dụng một GPU vào trạng thái, kèm mặc định hợp lý cho iGPU và máy cầm tay */
+function applyGpu(entry, conf){
+  state.gpuKey  = entry[0];
+  state.gpuIdx  = entry[1];
+  state.gpuConf = conf;
+  state.handheld = isHandheld(entry);
+  state.igpu = isIntegrated(entry);
+  // Chọn tay một card máy chủ hay card ảo cũng có nghĩa là đang ở trong máy ảo
+  const f = entry[4] || "";
+  if(f === "vd" || f === "dc"){
+    state.vm = {isVM:true, virtualDisplay:f === "vd", passthrough:f === "dc", kind:f};
+  }else if(state.vm && state.vm.kind && state.vm.kind !== "hv"){
+    state.vm = {isVM:false, virtualDisplay:false, passthrough:false, kind:null};
+  }
+  // iGPU không có VRAM riêng — cắt một phần RAM hệ thống ra dùng.
+  // Máy cầm tay xuất xưởng 16 GB RAM, chia sẵn 4 GB cho GPU → Windows thấy 11.7 GB.
+  if(!state.vramUserSet) state.gpuVram = entry[2] || (state.handheld ? 4 : 2);
+  if(state.handheld && !state.ramVisible){
+    state.ram = 16;
+    state.ramVisible = 11.7;
+    state.vramFrom = {installed:16, vram:4};
+  }
+  // Chế độ nguồn theo tình trạng pin thật, trừ khi người dùng đã tự chọn
+  if(state.powerUserSet) syncPower(); else autoPower();
+}
+
+function powerTable(){ return state.handheld ? POWER_HANDHELD : POWER_NORMAL; }
+function syncPower(){
+  const row = powerTable().find(p => p[0] === state.powerKey) || powerTable()[0];
+  state.powerKey = row[0];
+  state.powerG = row[1];
+  state.powerC = row[2];
+}
+
+function nearestGpuName(idx){
+  // Chỉ so với card tiêu dùng — không đoán bừa ra card máy chủ hay card ảo
+  const pool = GPUS.filter(g => g[2] > 0 && !g[4]);
+  let best = pool[0];
+  for(const g of pool) if(Math.abs(g[1]-idx) < Math.abs(best[1]-idx)) best = g;
+  return best;
+}
+
+async function readOS(){
+  try{
+    if(navigator.userAgentData && navigator.userAgentData.getHighEntropyValues){
+      const h = await navigator.userAgentData.getHighEntropyValues(["platform","platformVersion","architecture","bitness"]);
+      let name = h.platform || "";
+      if(name === "Windows"){
+        const major = parseInt((h.platformVersion||"0").split(".")[0], 10);
+        name = major >= 13 ? "Windows 11" : (major > 0 ? "Windows 10" : "Windows");
+      }
+      const bits = h.bitness ? h.bitness + "-bit" : "";
+      const arch = h.architecture === "arm" ? "ARM" : (h.architecture === "x86" ? "x64" : h.architecture);
+      return {name, extra:[arch, bits].filter(Boolean).join(" · "), conf:"ok", arch:h.architecture || null};
+    }
+  }catch(e){}
+  const ua = navigator.userAgent;
+  let name = "Không rõ";
+  if(/Windows NT 10/.test(ua)) name = "Windows 10 / 11";
+  else if(/Windows/.test(ua)) name = "Windows (đời cũ)";
+  else if(/Mac OS X/.test(ua)) name = "macOS";
+  else if(/Android/.test(ua)) name = "Android";
+  else if(/iPhone|iPad/.test(ua)) name = "iOS";
+  else if(/Linux/.test(ua)) name = "Linux";
+  const arch = /arm|aarch64/i.test(ua) ? "arm" : (/Mac OS X/.test(ua) ? null : "x86");
+  return {name, extra:"", conf:"est", arch};
+}
+
+/* ===================================================================
+   ĐO SÂU — cấp phát thật để tìm mốc VRAM và RAM trống.
+   Nặng nên chỉ chạy khi người dùng bấm nút.
+   =================================================================== */
+
+/* VRAM: cấp phát texture đến khi driver hết chỗ, hoặc đến khi texture cũ
+   bị đẩy sang RAM hệ thống (thời gian xoá vọt lên) — đó là mốc VRAM thật. */
+async function probeVram(onStep){
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 2;
+  const gl = canvas.getContext("webgl2", {antialias:false, depth:false, stencil:false});
+  if(!gl) return null;
+
+  let lost = false;
+  canvas.addEventListener("webglcontextlost", e => { e.preventDefault(); lost = true; });
+
+  const SIDE = 4096;                       // 4096 × 4096 × RGBA8 = 64 MB mỗi texture
+  const MB_PER = SIDE*SIDE*4/1048576;
+  const MAX_MB = 24576;                    // trần an toàn 24 GB
+  const DEADLINE = performance.now() + 9000;
+  const texes = [];
+  const fb = gl.createFramebuffer();
+  const px = new Uint8Array(4);
+
+  // Xoá sạch một texture rồi đọc 1 điểm ảnh để ép driver nạp nó lên GPU thật
+  const touch = tex => {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    if(gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) return -1;
+    const t0 = performance.now();
+    gl.clearColor(0.25,0.5,0.75,1); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,px);
+    return performance.now() - t0;
+  };
+
+  let baseline = null, verdict = "cap", evicted = 0;
+  try{
+    while(texes.length*MB_PER < MAX_MB && !lost && performance.now() < DEADLINE){
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      while(gl.getError() !== gl.NO_ERROR){}            // xả hàng lỗi cũ
+      gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, SIDE, SIDE);
+      const err = gl.getError();
+      if(err === gl.OUT_OF_MEMORY || err === gl.INVALID_OPERATION){
+        gl.deleteTexture(tex); verdict = "oom"; break;
+      }
+      const ms = touch(tex);
+      if(ms < 0){ gl.deleteTexture(tex); verdict = "oom"; break; }
+      texes.push(tex);
+
+      if(baseline === null || (texes.length <= 4 && ms < baseline)) baseline = ms;
+
+      // Cứ vài vòng lại sờ lại texture cũ nhất: nếu nó đã bị đẩy khỏi GPU thì chậm hẳn
+      if(texes.length > 6 && texes.length % 4 === 0){
+        const old = touch(texes[Math.floor(texes.length*0.15)]);
+        if(old > Math.max(baseline*3.5, baseline + 2.5)){
+          if(++evicted >= 2){ verdict = "evict"; break; }
+        }else evicted = 0;
+      }
+      if(texes.length % 8 === 0){
+        if(onStep) onStep(texes.length*MB_PER);
+        await new Promise(r => setTimeout(r, 0));       // nhường luồng cho giao diện
+      }
+    }
+  }catch(e){ verdict = "error"; }
+
+  const mb = texes.length * MB_PER;
+  for(const t of texes){ try{ gl.deleteTexture(t); }catch(e){} }
+  try{ gl.deleteFramebuffer(fb); gl.getExtension("WEBGL_lose_context").loseContext(); }catch(e){}
+  if(lost) verdict = "lost";
+  return {gb: mb/1024, verdict, baseline};
+}
+
+/* Suy ra VRAM từ chênh lệch giữa RAM gắn trên máy và RAM Windows nhìn thấy.
+   Trên máy dùng iGPU, phần chia cho GPU bị cắt trước khi Windows đếm:
+   Windows thấy = RAM thật − VRAM − khoảng 0.3 GB phần cứng giữ lại. */
+function deriveMemory(visible, handheld){
+  const caps  = handheld ? [16,24,32] : [4,8,12,16,24,32,48,64,96,128];
+  const vrams = [0.5,1,2,3,4,6,8,12,16];
+  const common = new Set([8,16,32,64]);
+  let best = null;
+  for(const installed of caps){
+    for(const v of vrams){
+      if(v >= installed) continue;
+      const expect = installed - v - 0.3;          // phần cứng giữ ~0.3 GB
+      let err = Math.abs(expect - visible);
+      if(!common.has(installed)) err += 0.35;      // 12/24/48 GB hiếm hơn
+      if(v === 3 || v === 6 || v === 0.5) err += 0.2;
+      if(!best || err < best.err) best = {installed, vram:v, err, expect};
+    }
+  }
+  return best;
+}
+
+/* RAM trống: cấp phát từng khối 256 MB, chạm vào mọi trang nhớ.
+   Khi hệ điều hành bắt đầu đẩy ra ổ cứng thì dừng ngay — không để máy đơ. */
+async function probeRam(onStep){
+  const STEP = 256*1048576;
+  const CAP  = 56;                    // trần 14 GB, đủ để phân biệt 12 GB với 16 GB
+  const bufs = [];
+  let baseline = null, verdict = "cap";
+  try{
+    for(let i=0;i<CAP;i++){
+      let a;
+      try{ a = new Uint8Array(STEP); }catch(e){ verdict = "oom"; break; }
+      const t0 = performance.now();
+      for(let p=0;p<STEP;p+=4096) a[p] = 1;            // chạm mọi trang 4 KB
+      const ms = performance.now() - t0;
+      bufs.push(a);
+      if(baseline === null || ms < baseline) baseline = ms;
+      if(i >= 3 && ms > baseline*2.5){ verdict = "swap"; break; }
+      if(i % 2 === 1){
+        if(onStep) onStep(bufs.length*0.25);
+        await new Promise(r => setTimeout(r, 0));
+      }
+    }
+  }catch(e){ verdict = "error"; }
+  const gb = bufs.length * 0.25;
+  for(let i=0;i<bufs.length;i++) bufs[i] = null;        // trả lại ngay cho hệ thống
+  bufs.length = 0;
+  return {gb, verdict};
+}
+
+/* --- Pin: API duy nhất cho biết máy đang cắm sạc hay chạy pin --- */
+async function readBattery(){
+  try{
+    if(!navigator.getBattery) return {supported:false};
+    const b = await navigator.getBattery();
+    // Máy bàn và laptop sạc đầy trả về y hệt nhau — không thể phân biệt,
+    // nên chỉ coi là máy bàn khi phần cứng cũng không giống máy xách tay.
+    const looksFull = b.charging && b.level === 1 && b.dischargingTime === Infinity && b.chargingTime === 0;
+    const desktop = looksFull && !state.handheld && !state.igpu;
+    const out = {
+      supported:true, desktop,
+      charging:b.charging,
+      level:Math.round(b.level*100),
+      hours: (!b.charging && isFinite(b.dischargingTime)) ? b.dischargingTime/3600 : null
+    };
+    // Cắm/rút sạc là đổi hiệu năng ngay — cập nhật trực tiếp, không cần quét lại
+    if(!state.batteryHooked){
+      state.batteryHooked = true;
+      const onChange = async ()=>{
+        const f = await readBattery();
+        state.battery = f;
+        if(!state.powerUserSet) autoPower();
+        render();
+      };
+      b.addEventListener("chargingchange", onChange);
+      b.addEventListener("levelchange", async ()=>{ state.battery = await readBattery(); render(); });
+    }
+    return out;
+  }catch(e){ return {supported:false}; }
+}
+
+/* Chọn chế độ nguồn theo tình trạng pin thật */
+function autoPower(){
+  const b = state.battery;
+  if(!b || !b.supported){ state.powerKey = state.handheld ? "25" : "max"; return syncPower(); }
+  if(b.desktop) state.powerKey = "max";
+  else if(b.charging) state.powerKey = state.handheld ? "25" : "max";
+  else state.powerKey = state.handheld ? "15" : "sav";
+  syncPower();
+}
+
+/* --- Băng thông RAM: với máy dùng iGPU thì đây mới là thứ quyết định FPS --- */
+function benchBandwidth(){
+  try{
+    const N = 8*1024*1024;          // 8 triệu số thực = 64 MB, vượt xa mọi cache
+    const a = new Float64Array(N);
+    for(let i=0;i<N;i+=256) a[i] = i*0.5;
+    let s = 0;
+    for(let i=0;i<N;i+=4) s += a[i];   // hâm nóng
+    const t0 = performance.now();
+    for(let r=0;r<3;r++) for(let i=0;i<N;i++) s += a[i];
+    const ms = performance.now() - t0;
+    if(s === -1) console.log(s);
+    return (3*N*8)/(ms/1000)/1e9;   // GB/s
+  }catch(e){ return null; }
+}
+
+async function readDisk(){
+  try{
+    if(!navigator.storage || !navigator.storage.estimate) return null;
+    const e = await navigator.storage.estimate();
+    if(!e || !e.quota) return null;
+    // Chrome cấp hạn mức ≈ 60% dung lượng trống của ổ
+    return Math.round(e.quota / 0.6 / 1e9);
+  }catch(e){ return null; }
+}
+
+/* ===================================================================
+   6. QUÉT
+   =================================================================== */
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+let scanning = false;
+
+async function scan(){
+  if(scanning) return;
+  scanning = true;
+  $("rescan").disabled = true;
+  $("dot").className = "dot run";
+  $("rows").classList.add("stale");
+  const step = (pct,msg)=>{ $("bar").style.width = pct+"%"; $("status").textContent = msg; };
+
+  step(4,"Đang đọc hệ điều hành và kiến trúc chip…");
+  const os = await readOS();
+  state.os = os.name; state.osExtra = os.extra; state.osConf = os.conf; state.arch = os.arch;
+
+  step(10,"Đang hỏi trình duyệt về card đồ họa…");
+  await sleep(100);
+
+  const wgl = readWebGL();
+  const wgpu = await readWebGPU();
+  const raw = [wgl, wgpu].filter(Boolean).join(" | ");
+  state.gpuRaw = raw || "không đọc được";
+  state.vm = detectVM(raw);
+  const hit = raw ? matchGpu(raw) : null;
+
+  step(26,"Đang đo hiệu năng GPU bằng shader nặng…");
+  await sleep(40);
+  state.benchU = benchGpu();
+
+  if(hit){
+    applyGpu(hit, "ok");
+  }else if(state.benchU != null){
+    const idx = tierFromBench(state.benchU);
+    const near = nearestGpuName(idx);
+    applyGpu(near, "est");
+    state.gpuIdx = idx;
+  }else{
+    state.gpuConf = "no";
+  }
+
+  step(44,"Đang đo tốc độ một nhân CPU…");
+  await sleep(40);
+  state.cores = navigator.hardwareConcurrency || 4;
+  const stOps = benchSingle();
+
+  step(56,"Đang dò siêu phân luồng và nhân lớn/nhỏ…");
+  const topo = await probeTopology(state.cores, stOps);
+
+  step(68,"Đang đo dung lượng cache L2 / L3…");
+  await sleep(30);
+  const cache = probeCache();
+
+  // Quy điểm đo về thang chuẩn, tự hiệu chỉnh theo trình duyệt
+  const ST_REF = 2.5e6;   // ~250 triệu vòng/giây ≈ điểm đơn nhân 100 (hiệu chỉnh trên Zen 4)
+  state.evidence = {
+    threads: state.cores,
+    arch: state.arch || null,
+    vm: state.vm ? state.vm.isVM : false,
+    hybrid: topo.ok ? topo.hybrid : null,
+    smt: topo.ok ? topo.smt : null,
+    cores: topo.ok ? topo.cores : null,
+    l1: cache ? cache.l1 : null,
+    l2: cache ? cache.l2 : null,
+    l3: cache ? cache.l3 : null,
+    stIndex: Math.max(20, Math.min(200, Math.round(stOps / ST_REF))),
+    workers: topo.ok
+  };
+
+  const id = identifyCpu(state.evidence);
+  state.cpuName = id.cpu[0];
+  state.cpuIdx  = cpuGameIdx(id.cpu, state.cores);
+  state.cpuAlts = id.alts;
+  state.cpuConf = id.conf;
+  state.cpuMeasured = state.evidence.stIndex;
+
+  step(76,"Đang đo băng thông RAM…");
+  await sleep(30);
+  state.bandwidth = benchBandwidth();
+
+  const dm = navigator.deviceMemory;
+  if(dm){
+    // deviceMemory bị chặn cứng ở 8 GB — máy 16/32/64 GB đều báo 8
+    state.ram = dm >= 8 ? (state.handheld ? 16 : 16) : dm;
+    state.ramConf = dm >= 8 ? "est" : "ok";
+  }else{
+    state.ram = 16; state.ramConf = "no";
+  }
+
+  step(84,"Đang đọc pin và nguồn điện…");
+  state.battery = await readBattery();
+  if(!state.powerUserSet) autoPower();
+
+  // Chạy lại bài đơn nhân để xem máy có bị bóp xung khi nóng lên không
+  const stAgain = benchSingle();
+  state.throttle = stOps > 0 ? stAgain/stOps : 1;
+
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.round(screen.width * dpr), h = Math.round(screen.height * dpr);
+  state.screen = w + " × " + h;
+  state.screenConf = "ok";
+
+  step(86,"Đang đo tần số quét màn hình…");
+  state.hz = await measureHz();
+
+  state.disk = await readDisk();
+
+  step(100,"Xong.");
+  state.scanned = true;
+  $("dot").className = "dot done";
+  $("rows").classList.remove("stale");
+  $("reflabel").textContent = "máy của bạn · " + new Date().toLocaleTimeString("vi-VN");
+  $("rescan").disabled = false;
+
+  // độ phân giải mặc định theo màn hình thật (máy cầm tay thì lấy mốc 720p cho sát thực tế)
+  const maxSide = Math.max(w,h);
+  $("res").value = state.handheld ? "720"
+    : maxSide >= 3600 ? "2160" : maxSide >= 2400 ? "1440" : maxSide >= 1800 ? "1080" : "720";
+
+  const ev = state.evidence, bits = [];
+  bits.push(state.gpuConf === "ok" ? "Nhận ra GPU" : state.gpuConf === "est" ? "GPU chỉ ước lượng" : "Không đọc được GPU");
+  if(ev && ev.cores) bits.push("CPU " + ev.cores + " nhân " + ev.threads + " luồng" + (ev.smt ? ", có SMT" : ""));
+  else if(ev && ev.hybrid) bits.push("CPU " + ev.threads + " luồng, nhân lớn + nhân nhỏ");
+  else bits.push(state.cores + " luồng CPU");
+  if(ev && ev.l2) bits.push("cache đo được L2 " + ev.l2 + " KB");
+  if(CPU_HINTS[state.gpuKey]) bits.push("dòng CPU suy ra từ iGPU");
+  const b = state.battery;
+  if(b && b.supported) bits.push(b.desktop ? "máy bàn" : (b.charging ? "đang cắm sạc" : "đang chạy pin " + b.level + "%"));
+  if(state.bandwidth) bits.push("RAM " + state.bandwidth.toFixed(1) + " GB/s");
+  $("status").textContent = bits.join(" · ") + ". Sai thì chọn lại bên dưới.";
+  scanning = false;
+  render();
+}
+
+/* ===================================================================
+   7. TÍNH FPS
+   =================================================================== */
+/* Từ con số Task Manager hiển thị → suy ra RAM thật và VRAM đã bị cắt */
+function setVisibleRam(visible, conf){
+  state.ramVisible = visible;
+  const d = deriveMemory(visible, state.handheld);
+  if(d){
+    state.ram = d.installed;
+    state.ramConf = conf || "ok";
+    if(state.igpu && !state.vramUserSet){
+      state.gpuVram = d.vram;
+      state.vramFrom = d;
+    }
+  }
+}
+
+/* RAM thực sự còn cho game: iGPU cắt một phần làm VRAM trước khi Windows thấy */
+function usableRam(){
+  if(state.igpu) return Math.max(2, state.ramVisible || (state.ram - state.gpuVram - 0.3));
+  return state.ram;
+}
+
+function estimate(game, res, preset){
+  const upRow = UPSCALE.find(u => u[0] === state.upscale) || UPSCALE[0];
+  const canUpscale = state.upscale !== "off" && !NO_UPSCALE.has(game.n);
+  const upMul = canUpscale ? upRow[1] : 1;
+
+  const vramNeed = game.vram * PRESET_V[preset] * RES_V[res] * (canUpscale ? 0.9 : 1);
+  const haveVram = state.gpuVram || 2;
+  let vramPen = 1, short = null;
+  if(haveVram < vramNeed * 0.75){ vramPen = 0.62; short = "thiếu VRAM nặng"; }
+  else if(haveVram < vramNeed){ vramPen = 0.84; short = "hơi thiếu VRAM"; }
+
+  const ram = usableRam();
+  let ramPen = 1, ramShort = null;
+  if(ram < game.ram * 0.6){ ramPen = 0.55; ramShort = "thiếu RAM"; }
+  else if(ram < game.ram){ ramPen = 0.85; ramShort = "RAM sát mức tối thiểu"; }
+
+  // Ảo hoá lấy mất một phần hiệu năng, CPU nhiều hơn GPU passthrough
+  const vmG = state.vm && state.vm.isVM ? 0.95 : 1;
+  const vmC = state.vm && state.vm.isVM ? 0.90 : 1;
+
+  const gpuFps = state.gpuIdx * state.powerG * vmG * game.g * PRESET_G[preset] * RES_G[res] * vramPen * upMul;
+  const cpuFps = state.cpuIdx * state.powerC * vmC * game.c * PRESET_C[preset];
+  let fps = Math.min(gpuFps, cpuFps) * ramPen;
+  const capped = fps > game.cap;
+  fps = Math.min(fps, game.cap);
+
+  const runnable = state.gpuIdx >= game.min && ram >= game.ram * 0.55;
+  return {
+    fps: Math.round(fps),
+    capped,
+    bottleneck: cpuFps < gpuFps ? "cpu" : "gpu",
+    runnable, short, ramShort,
+    noUpscale: state.upscale !== "off" && NO_UPSCALE.has(game.n)
+  };
+}
+
+function bestPreset(game, res){
+  for(const p of ["ultra","high","med","low"]){
+    const e = estimate(game, res, p);
+    if(e.runnable && e.fps >= 60) return {p, fps:e.fps, target:60};
+  }
+  for(const p of ["high","med","low"]){
+    const e = estimate(game, res, p);
+    if(e.runnable && e.fps >= 30) return {p, fps:e.fps, target:30};
+  }
+  return null;
+}
+
+function grade(fps, runnable){
+  if(!runnable) return {cls:"bad", label:"Không chạy nổi"};
+  if(fps >= 100) return {cls:"great", label:"Mượt tối đa"};
+  if(fps >= 60)  return {cls:"ok",    label:"Chơi tốt"};
+  if(fps >= 45)  return {cls:"mid",   label:"Chơi được"};
+  if(fps >= 30)  return {cls:"mid",   label:"Hơi giật"};
+  return {cls:"bad", label:"Không nên"};
+}
+
+/* ===================================================================
+   8. HIỂN THỊ
+   =================================================================== */
+/* Dòng liệt kê đúng những gì đo được — không suy diễn thêm */
+function cpuEvidenceLine(){
+  const e = state.evidence;
+  const out = [];
+  if(!e) return state.cores + " luồng · chưa đo";
+  if(e.vm) out.push("<b>máy ảo cấp " + e.threads + " luồng</b> (một lát cắt của chip máy chủ)");
+  else if(e.cores) out.push(e.cores + " nhân · " + e.threads + " luồng" + (e.smt ? " (có siêu phân luồng)" : " (không siêu phân luồng)"));
+  else if(e.hybrid) out.push(e.threads + " luồng · nhân lớn + nhân nhỏ");
+  else out.push(e.threads + " luồng");
+  if(e.l1) out.push("L1 ≈ " + e.l1 + " KB");
+  if(e.l2) out.push("L2 ≈ " + (e.l2 >= 1024 ? (e.l2/1024).toFixed(e.l2%1024?1:0) + " MB" : e.l2 + " KB") + "/nhân");
+  if(e.l3) out.push("L3 ≈ " + e.l3 + " MB");
+  if(e.stIndex) out.push("đơn nhân " + e.stIndex);
+  out.push("sức mạnh game " + Math.round(state.cpuIdx * state.powerC));
+  if(!e.workers) out.push("trình duyệt chặn Worker nên không dò được cấu trúc");
+  return out.join(" · ");
+}
+
+function ramLine(){
+  const bits = [];
+  if(state.ramFree){
+    const f = state.ramFree.gb;
+    bits.push("<b>đo thật: còn trống " + f.toFixed(1) + " GB</b>");
+    if(f < 3) bits.push("<b style='color:var(--warn)'>RAM gần hết — đóng bớt ứng dụng trước khi chơi</b>");
+  }else{
+    const dm = navigator.deviceMemory;
+    if(dm >= 8) bits.push("trình duyệt chặn ở 8 GB, không đọc được tổng");
+    else if(dm) bits.push("trình duyệt báo " + dm + " GB");
+    else bits.push("trình duyệt không cho biết");
+  }
+  if(state.bandwidth){
+    bits.push("băng thông " + state.bandwidth.toFixed(1) + " GB/s");
+    if(state.igpu && state.bandwidth < 6) bits.push("<b style='color:var(--warn)'>thấp bất thường — kiểm tra xem có đang chạy 1 thanh RAM không</b>");
+  }
+  return bits.join(" · ");
+}
+
+/* Trình bày rõ phép trừ, để người dùng tự kiểm chứng được */
+function vramDeriveLine(){
+  if(state.vramUserSet) return "bạn đã tự chọn · chỉnh trong BIOS hoặc Armoury Crate";
+  const d = state.vramFrom;
+  if(d && state.ramVisible != null){
+    return `${d.installed} GB gắn trên máy − ${state.ramVisible} GB Windows thấy − 0.3 GB phần cứng giữ = <b>${d.vram} GB</b>`;
+  }
+  if(state.ramFree){
+    return "đo được còn trống " + state.ramFree.gb.toFixed(1) + " GB → nhập số Task Manager bên dưới để suy ra chính xác";
+  }
+  return "bấm “Đo thật RAM & VRAM”, hoặc nhập số Task Manager bên dưới";
+}
+
+function vmLine(){
+  const v = state.vm;
+  if(!v || !v.isVM) return "";
+  if(v.virtualDisplay) return " · <b style='color:var(--bad)'>card màn hình ảo, không có GPU thật — game 3D sẽ không chạy</b>";
+  if(v.passthrough)   return " · <b style='color:var(--warn)'>GPU máy chủ gán vào máy ảo (passthrough), trừ hao ~5%</b>";
+  return " · <b style='color:var(--warn)'>đang chạy trong máy ảo</b>";
+}
+
+function vramLine(){
+  const v = state.vramMeasured;
+  if(!v) return (state.igpu ? state.gpuVram + " GB chia từ RAM" : state.gpuVram + " GB VRAM") + vmLine();
+  return "<b>đo thật: cấp phát được " + v.gb.toFixed(1) + " GB</b> · " + vramWhy(v.verdict)
+       + (state.igpu ? " · gồm cả phần chia từ RAM hệ thống" : "") + vmLine();
+}
+
+function batteryTag(){
+  const b = state.battery;
+  if(!b || !b.supported) return '<span class="tag est">chọn tay</span>';
+  return '<span class="tag ok">đọc được pin</span>';
+}
+function batteryLine(){
+  const b = state.battery;
+  const bits = [];
+  if(b && b.supported){
+    if(b.desktop) bits.push("không thấy pin đang xả → coi như máy bàn, chạy hết công suất");
+    else if(b.charging) bits.push("đang cắm sạc · pin " + b.level + "%");
+    else bits.push("đang chạy pin · còn " + b.level + "%" + (b.hours ? " ≈ " + b.hours.toFixed(1) + " giờ" : ""));
+  }else{
+    bits.push(state.handheld ? "máy cầm tay đổi TDP là FPS đổi theo" : "trình duyệt không cho đọc pin");
+  }
+  if(state.throttle && state.throttle < 0.85){
+    bits.push("<b style='color:var(--warn)'>máy đang bị bóp xung " + Math.round((1-state.throttle)*100) + "%</b>");
+  }
+  return bits.join(" · ");
+}
+
+function confTag(c){
+  if(c === "ok")  return '<span class="tag ok">đọc được</span>';
+  if(c === "est") return '<span class="tag est">ước lượng</span>';
+  return '<span class="tag no">không rõ</span>';
+}
+
+function renderSpecs(){
+  const flagOf = g => g[4] || "";
+  const opt = g => `<option value="${g[0]}"${g[0]===state.gpuKey?" selected":""}>${gpuName(g)}</option>`;
+  const grp = (label, pick) => {
+    const rows = GPUS.filter(pick).map(opt).join("");
+    return rows ? `<optgroup label="${label}">${rows}</optgroup>` : "";
+  };
+  const gpuOpts =
+      grp("Máy chơi game cầm tay", g => flagOf(g) === "hh") +
+      grp("Card rời &amp; card onboard", g => !flagOf(g)) +
+      grp("Máy chủ / passthrough vào máy ảo", g => flagOf(g) === "dc") +
+      grp("Card màn hình ảo (không có GPU thật)", g => flagOf(g) === "vd");
+
+  // Máy ảo chỉ cấp một lát cắt vCPU nên không lọc theo số luồng được
+  const cpuList = CPUS.map((c,i)=>({c,i})).filter(x =>
+    state.cpuShowAll || isServerCpu(x.c) || !state.cores ||
+    x.c[CPU_T] === state.cores || x.c[0] === state.cpuName);
+  const cpuOpts = cpuList.map(x=>{
+    const label = isServerCpu(x.c)
+      ? x.c[0] + " · " + (state.cores || "?") + " nhân ảo"
+      : x.c[0] + " · " + x.c[CPU_T] + " luồng";
+    return `<option value="${x.i}"${x.c[0]===state.cpuName?" selected":""}>${label}</option>`;
+  }).join("");
+  const ramOpts = [4,6,8,12,16,24,32,64].map(r=>`<option value="${r}"${r===state.ram?" selected":""}>${r} GB</option>`).join("");
+  const powOpts = powerTable().map(p=>`<option value="${p[0]}"${p[0]===state.powerKey?" selected":""}>${p[3]}</option>`).join("");
+  const vramOpts = [1,2,3,4,6,8,10,12].map(v=>`<option value="${v}"${v===state.gpuVram?" selected":""}>${v} GB</option>`).join("");
+
+  const benchTxt = state.benchU != null ? "điểm đo: " + state.benchU.toFixed(1) : "chưa đo được";
+  const effIdx = Math.round(state.gpuIdx * state.powerG);
+
+  $("specs").innerHTML = `
+    <div class="spec">
+      <span class="spec-k">Card đồ họa ${confTag(state.gpuConf)}</span>
+      <span class="spec-v">${gpuName(GPU_BY_KEY.get(state.gpuKey))}</span>
+      <span class="spec-sub">${vramLine()} · sức mạnh ${effIdx}${effIdx !== Math.round(state.gpuIdx) ? " (gốc " + Math.round(state.gpuIdx) + ")" : ""} · ${benchTxt}</span>
+      <select id="sel-gpu" aria-label="Chọn card đồ họa">${gpuOpts}</select>
+    </div>
+    <div class="spec">
+      <span class="spec-k">${state.handheld ? "Mức điện (TDP)" : "Chế độ nguồn"} ${batteryTag()}</span>
+      <span class="spec-v">${(powerTable().find(p=>p[0]===state.powerKey)||powerTable()[0])[3]}</span>
+      <span class="spec-sub">${batteryLine()}</span>
+      <select id="sel-pow" aria-label="Chọn chế độ nguồn">${powOpts}</select>
+    </div>
+    <div class="spec" style="grid-column:span 2">
+      <span class="spec-k">Bộ xử lý ${confTag(state.cpuConf)}</span>
+      <span class="spec-v">${state.cpuName}</span>
+      <span class="spec-sub">${cpuEvidenceLine()}</span>
+      ${state.cpuAlts && state.cpuAlts.length
+        ? `<span class="spec-sub">không tách được với: ${state.cpuAlts.join(", ")} — cùng loại chip</span>` : ""}
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--muted)">
+        <input type="checkbox" id="cpu-all"${state.cpuShowAll?" checked":""}> hiện cả CPU khác số luồng
+      </label>
+      <select id="sel-cpu" aria-label="Chọn bộ xử lý">${cpuOpts}</select>
+    </div>
+    <div class="spec">
+      <span class="spec-k">Bộ nhớ RAM ${confTag(state.ramConf)}</span>
+      <span class="spec-v">${state.ram} GB${state.igpu ? " <span style='font-weight:400;color:var(--muted)'>· Windows thấy " + usableRam().toFixed(1) + " GB</span>" : ""}</span>
+      <span class="spec-sub">${ramLine()}</span>
+      <select id="sel-ram" aria-label="Chọn dung lượng RAM">${ramOpts}</select>
+    </div>
+    ${state.igpu ? `<div class="spec" style="grid-column:span 2">
+      <span class="spec-k">VRAM chia cho iGPU ${state.vramUserSet ? '<span class="tag est">chọn tay</span>' : state.vramFrom ? '<span class="tag ok">suy ra</span>' : '<span class="tag est">mặc định</span>'}</span>
+      <span class="spec-v">${state.gpuVram} GB</span>
+      <span class="spec-sub">${vramDeriveLine()}</span>
+      <label style="display:block;margin-top:6px;font-size:12px;color:var(--muted)">
+        Task Manager báo máy có bao nhiêu GB “usable”?
+        <input type="number" id="sel-visible" step="0.1" min="1" max="256" inputmode="decimal"
+               value="${state.ramVisible != null ? state.ramVisible : ""}" placeholder="vd 11.7"
+               style="width:86px;margin-left:6px;font-family:var(--f-mono);font-size:13px;padding:4px 6px;border:1px solid var(--line-strong);border-radius:3px;background:var(--surface-2);color:var(--ink)">
+      </label>
+      <select id="sel-vram" aria-label="Chọn dung lượng VRAM chia sẻ">${vramOpts}</select>
+    </div>` : ""}
+    <div class="spec">
+      <span class="spec-k">Màn hình ${confTag(state.screenConf)}</span>
+      <span class="spec-v">${state.screen}</span>
+      <span class="spec-sub">${state.hz} Hz · tỉ lệ hiển thị ${(window.devicePixelRatio||1).toFixed(2)}×</span>
+    </div>
+    <div class="spec">
+      <span class="spec-k">Hệ điều hành ${confTag(state.osConf)}</span>
+      <span class="spec-v">${state.os}</span>
+      <span class="spec-sub">${state.osExtra || navigator.platform || "—"}</span>
+    </div>
+    <div class="spec">
+      <span class="spec-k">Ổ đĩa ${confTag(state.disk?"est":"no")}</span>
+      <span class="spec-v">${state.disk ? "≈ " + state.disk + " GB trống" : "Không đọc được"}</span>
+      <span class="spec-sub">${state.disk ? "suy ra từ hạn mức lưu trữ của trình duyệt" : "trình duyệt chặn thông tin ổ đĩa"}</span>
+    </div>`;
+
+  $("sel-gpu").addEventListener("change", e=>{
+    const g = GPU_BY_KEY.get(e.target.value);
+    if(!g) return;
+    applyGpu(g, "ok");
+    // Chọn máy cầm tay thì gợi ý luôn CPU đi kèm
+    const pair = {"z1 extreme":"Ryzen Z1 Extreme (8c/16t)","z2 extreme":"Ryzen Z2 Extreme (8c/16t)",
+                  "z1 non":"Ryzen Z1 (6c/12t)","z2 go":"Ryzen Z2 Go (4c/8t)",
+                  "steam deck":"Steam Deck APU (4c/8t)","msi claw":"Core Ultra 7 155H (MSI Claw)"}[g[0]];
+    if(pair){
+      const c = CPUS.find(x=>x[0] === pair);
+      if(c){ state.cpuName = c[0]; state.cpuIdx = cpuGameIdx(c, state.cores); state.cpuConf = "ok"; state.cpuAlts = []; }
+    }else if(state.evidence){
+      // GPU mới có thể là manh mối mới về CPU — nhận dạng lại
+      const id = identifyCpu(state.evidence);
+      state.cpuName = id.cpu[0]; state.cpuIdx = cpuGameIdx(id.cpu, state.cores);
+      state.cpuAlts = id.alts; state.cpuConf = id.conf;
+    }
+    render();
+  });
+  $("sel-pow").addEventListener("change", e=>{
+    state.powerKey = e.target.value; state.powerUserSet = true; syncPower(); render();
+  });
+  $("sel-cpu").addEventListener("change", e=>{
+    const c = CPUS[+e.target.value];
+    if(c){ state.cpuName = c[0]; state.cpuIdx = cpuGameIdx(c, state.cores); state.cpuConf = "ok"; state.cpuAlts = []; render(); }
+  });
+  $("cpu-all").addEventListener("change", e=>{ state.cpuShowAll = e.target.checked; render(); });
+  $("sel-ram").addEventListener("change", e=>{
+    state.ram = +e.target.value; state.ramConf = "ok"; render();
+  });
+  if($("sel-vram")) $("sel-vram").addEventListener("change", e=>{
+    state.gpuVram = +e.target.value; state.vramUserSet = true; render();
+  });
+  if($("sel-visible")) $("sel-visible").addEventListener("change", e=>{
+    const v = parseFloat(e.target.value);
+    if(!isFinite(v) || v <= 0) return;
+    state.vramUserSet = false;           // số Task Manager đáng tin hơn lựa chọn cũ
+    setVisibleRam(v, "ok");
+    render();
+  });
+}
+
+function renderRows(){
+  const res = $("res").value, preset = $("preset").value;
+  const list = GAMES
+    .filter(g => state.cat === "all" || g.cat === state.cat)
+    .map(g => ({g, e: estimate(g, res, preset)}))
+    .sort((a,b) => (b.e.runnable - a.e.runnable) || (b.e.fps - a.e.fps));
+
+  let html = `<div class="row row-head"><span>Tựa game</span><span style="text-align:right">FPS ước lượng</span><span class="pill-cell">Đánh giá</span></div>`;
+  for(const {g,e} of list){
+    const gr = grade(e.fps, e.runnable);
+    const pct = Math.max(3, Math.min(100, e.fps/144*100));
+    const bp = bestPreset(g, res);
+    const notes = [];
+    if(!e.runnable) notes.push("dưới cấu hình tối thiểu");
+    else{
+      if(e.capped) notes.push("engine khóa " + g.cap + " FPS");
+      else if(e.bottleneck === "cpu") notes.push("nghẽn ở CPU");
+      if(e.noUpscale) notes.push("game này không có FSR/DLSS");
+      if(e.short) notes.push(e.short);
+      if(e.ramShort) notes.push(e.ramShort);
+      if(bp && bp.p !== preset) notes.push("nên để <b>" + PRESET_LABEL[bp.p] + "</b> → " + bp.fps + " FPS");
+    }
+    html += `<div class="row">
+      <div>
+        <div class="g-name">${g.n}</div>
+        ${notes.length ? `<div class="g-note">${notes.join(" · ")}</div>` : ""}
+      </div>
+      <div class="fpsbox">
+        <div class="fps c-${gr.cls}">${e.runnable ? e.fps : "—"}<small>${e.runnable ? " FPS" : ""}</small></div>
+        <div class="meter"><i class="b-${gr.cls}" style="width:${e.runnable?pct:0}%"></i></div>
+      </div>
+      <div class="pill-cell"><span class="pill p-${gr.cls}">${gr.label}</span></div>
+    </div>`;
+  }
+  $("rows").innerHTML = html;
+}
+
+function renderVerdict(){
+  const res = $("res").value, preset = $("preset").value;
+  let smooth = 0, play = 0, no = 0, cpuBound = 0;
+  for(const g of GAMES){
+    const e = estimate(g, res, preset);
+    if(!e.runnable || e.fps < 30) no++;
+    else if(e.fps >= 60) smooth++;
+    else play++;
+    if(e.runnable && e.bottleneck === "cpu" && !e.capped) cpuBound++;
+  }
+  $("t-smooth").textContent = smooth;
+  $("t-play").textContent = play;
+  $("t-no").textContent = no;
+
+  const i = state.gpuIdx * state.powerG;
+  let tier, sub;
+  if(state.vm && state.vm.virtualDisplay){
+    tier = "Máy ảo không có GPU";
+  }
+  else if(state.vm && state.vm.isVM){
+    tier = i >= 120 ? "Máy ảo cấu hình mạnh" : i >= 60 ? "Máy ảo chơi được" : "Máy ảo yếu";
+  }
+  else if(state.handheld){
+    if(i >= 42)      tier = "Máy cầm tay đời mới";
+    else if(i >= 28) tier = "Máy cầm tay tầm trung";
+    else if(i >= 18) tier = "Máy cầm tay cơ bản";
+    else             tier = "Máy cầm tay đang bị bóp điện";
+  }
+  else if(i >= 240) tier = "Cỗ máy đầu bảng";
+  else if(i >= 150) tier = "Gaming cao cấp";
+  else if(i >= 90)  tier = "Gaming tầm trung";
+  else if(i >= 55)  tier = "Gaming phổ thông";
+  else if(i >= 25)  tier = "Máy văn phòng chơi game nhẹ";
+  else if(i >= 10)  tier = "Chỉ hợp game rất nhẹ";
+  else              tier = "Không dành cho game";
+
+  const pct = Math.round(smooth / GAMES.length * 100);
+  sub = `Ở mức <b>${PRESET_LABEL[preset]} · ${RES_LABEL[res]}</b>, máy bạn chạy mượt <b>${pct}%</b> danh sách này.`;
+  if(state.vm && state.vm.virtualDisplay){
+    sub += " Máy ảo đang dựng hình bằng CPU nên mọi game 3D đều bất khả thi — cần gán một GPU thật vào máy ảo (passthrough) hoặc thuê máy có vGPU.";
+  }
+  else if(state.vm && state.vm.isVM){
+    sub += " Đang chạy trong máy ảo: số nhân là lát cắt do máy chủ cấp, và ảo hoá lấy mất khoảng 5–10% hiệu năng. Chọn đúng dòng chip máy chủ bên trên để sát hơn.";
+  }
+  else if(state.handheld){
+    if(res !== "720" && res !== "800") sub += " Máy cầm tay nên để <b>720p/800p</b> rồi bật FSR — màn 7 inch gần như không thấy khác biệt mà FPS tăng mạnh.";
+    else if(state.upscale === "off") sub += " Bật <b>FSR Chất lượng</b> là có thêm khoảng 40% FPS gần như miễn phí.";
+    else if(state.powerKey !== "30" && state.powerKey !== "35") sub += " Cắm sạc và kéo TDP lên 30 W khi chơi game nặng.";
+    else sub += " Đây gần như đã là mức cao nhất máy làm được — phần còn lại là hạ chất lượng đổ bóng và khử răng cưa.";
+  }
+  else if(cpuBound > GAMES.length * 0.45) sub += " CPU đang là điểm nghẽn — nâng card cũng ít cải thiện.";
+  else if(state.gpuVram && state.gpuVram <= 4 && i > 40) sub += " VRAM ít đang kéo tụt các game nặng, hãy hạ chất lượng texture.";
+  else if(usableRam() <= 8) sub += " Nâng lên 16 GB RAM (2 thanh) sẽ thấy khác biệt rõ ở game AAA.";
+  if(/^(macOS|iOS|Android)/.test(state.os)) sub += " Lưu ý: nhiều game trong danh sách không có bản cho " + state.os + ".";
+
+  $("v-title").textContent = tier;
+  $("v-sub").innerHTML = sub;
+}
+
+function render(){
+  renderSpecs();
+  renderVerdict();
+  renderRows();
+  renderEnvWarning();
+}
+
+/* ===================================================================
+   MÔI TRƯỜNG CHẠY — mở file trực tiếp thì Chrome chặn Web Worker,
+   mất phép dò số nhân thật. Nói thẳng ra thay vì im lặng trả kết quả thiếu.
+   =================================================================== */
+function renderEnvWarning(){
+  const el = $("envwarn");
+  const isFile = location.protocol === "file:";
+  const workersBlocked = state.evidence && !state.evidence.workers;
+  if(!isFile && !workersBlocked){ el.hidden = true; return; }
+
+  let html = "";
+  if(isFile){
+    html += "<b>Đang mở trực tiếp từ ổ đĩa (file://).</b> Chrome chặn Web Worker ở chế độ này, "
+         + "nên không dò được siêu phân luồng và số nhân thật của CPU; phần ước lượng ổ đĩa trống cũng thường hỏng. "
+         + "Mọi thứ còn lại — GPU, VRAM, cache, băng thông RAM, pin — vẫn đo bình thường."
+         + "<br>Muốn đủ thì chạy qua máy chủ cục bộ, mở thư mục chứa file rồi gõ:"
+         + "<br><code>python -m http.server 8000</code> rồi vào <code>http://localhost:8000/cau-hinh.html</code>";
+  }else if(workersBlocked){
+    html += "<b>Trình duyệt chặn Web Worker.</b> Không dò được số nhân thật, nên phần nhận dạng CPU "
+         + "chỉ dựa vào số luồng, cache và gợi ý từ iGPU. Chọn tay CPU bên dưới nếu chưa đúng.";
+  }
+  el.innerHTML = html;
+  el.hidden = false;
+}
+
+/* ===================================================================
+   9. SỰ KIỆN
+   =================================================================== */
+$("upscale").innerHTML = UPSCALE.map(u=>`<option value="${u[0]}">${u[2]}</option>`).join("");
+$("upscale").addEventListener("change", e=>{ state.upscale = e.target.value; renderVerdict(); renderRows(); });
+$("res").addEventListener("change", ()=>{ renderVerdict(); renderRows(); });
+$("preset").addEventListener("change", ()=>{ renderVerdict(); renderRows(); });
+$("cats").addEventListener("click", e=>{
+  const b = e.target.closest(".chip");
+  if(!b) return;
+  state.cat = b.dataset.cat;
+  for(const c of $("cats").children) c.setAttribute("aria-pressed", String(c === b));
+  renderRows();
+});
+$("rescan").addEventListener("click", scan);
+
+/* Đo sâu: cấp phát thật nên nặng máy — chỉ chạy khi người dùng bấm */
+let deepRunning = false;
+$("deep").addEventListener("click", async ()=>{
+  if(deepRunning || scanning) return;
+  deepRunning = true;
+  $("deep").disabled = true; $("rescan").disabled = true;
+  $("dot").className = "dot run";
+  const bar = pct => { $("bar").style.width = pct + "%"; };
+
+  try{
+    bar(10);
+    $("status").textContent = "Đang cấp phát bộ nhớ GPU để tìm mốc VRAM… màn hình có thể chớp nhẹ.";
+    const v = await probeVram(gb => {
+      $("status").textContent = "Đã cấp phát " + (gb/1024).toFixed(1) + " GB bộ nhớ GPU…";
+      bar(10 + Math.min(40, gb/1024*6));
+    });
+    if(v && v.gb > 0){
+      state.vramMeasured = v;
+      const known = [1,2,3,4,6,8,10,11,12,16,20,24,32];
+      if(state.igpu && !state.vramUserSet && (v.verdict === "evict" || v.verdict === "oom")){
+        // iGPU: driver cho tràn qua RAM hệ thống một ít trước khi chậm hẳn,
+        // nên làm tròn XUỐNG mốc chia sẵn quen thuộc (đo 5.0 GB ⇒ chia 4 GB).
+        let snap = known[0];
+        for(const k of known) if(k <= v.gb) snap = k;
+        state.gpuVram = snap;
+        state.vramFrom = null;
+        state.ram = state.handheld ? (snap >= 8 ? 24 : 16) : state.ram;
+        state.ramVisible = Math.round((state.ram - snap - 0.3)*10)/10;
+      }else if(!state.igpu && !state.vramUserSet){
+        // Card rời: cơ sở dữ liệu đã có VRAM chính xác, phép đo chỉ để đối chiếu
+        let snap = known[0];
+        for(const k of known) if(k <= v.gb + 0.9) snap = k;
+        state.gpuVram = snap;
+      }
+    }
+
+    bar(55);
+    $("status").textContent = "Đang cấp phát RAM để đo phần còn trống…";
+    const r = await probeRam(gb => {
+      $("status").textContent = "Đã cấp phát " + gb.toFixed(1) + " GB RAM…";
+      bar(55 + Math.min(40, gb*5));
+    });
+    // Đây là RAM CÒN TRỐNG, không phải tổng — trình duyệt không có cách nào biết
+    // Windows đang giữ bao nhiêu, nên không suy ra tổng từ con số này.
+    if(r && r.gb > 0) state.ramFree = r;
+    bar(100);
+    const bits = [];
+    if(state.vramMeasured) bits.push("bộ nhớ đồ họa cấp phát được " + state.vramMeasured.gb.toFixed(1) + " GB (" + vramWhy(state.vramMeasured.verdict) + ")");
+    if(state.ramFree) bits.push("RAM trống " + state.ramFree.gb.toFixed(1) + " GB (" + ramWhy(state.ramFree.verdict) + ")");
+    $("status").textContent = bits.length ? bits.join(" · ") : "Không đo sâu được — trình duyệt hoặc driver chặn.";
+  }catch(e){
+    $("status").textContent = "Đo sâu thất bại: " + e.message;
+  }finally{
+    $("dot").className = "dot done";
+    $("deep").disabled = false; $("rescan").disabled = false;
+    deepRunning = false;
+    render();
+  }
+});
+
+function vramWhy(v){
+  return v === "oom" ? "driver báo hết bộ nhớ" : v === "evict" ? "texture cũ bị đẩy khỏi GPU"
+       : v === "lost" ? "mất ngữ cảnh GPU" : v === "cap" ? "chạm trần an toàn, có thể còn nhiều hơn" : "dừng sớm";
+}
+function ramWhy(v){
+  return v === "swap" ? "hệ điều hành bắt đầu đẩy ra ổ cứng" : v === "oom" ? "không cấp phát thêm được"
+       : v === "cap" ? "chạm trần 8 GB, có thể còn nhiều hơn" : "dừng sớm";
+}
+$("copy").addEventListener("click", async ()=>{
+  const res = $("res").value, preset = $("preset").value;
+  const up = UPSCALE.find(u=>u[0]===state.upscale) || UPSCALE[0];
+  const lines = [
+    "KẾT QUẢ KIỂM TRA CẤU HÌNH",
+    "GPU: " + gpuName(GPU_BY_KEY.get(state.gpuKey)) + " (" + state.gpuVram + " GB VRAM)",
+    "CPU: " + state.cpuName + " · " + state.cores + " luồng",
+    "RAM: " + state.ram + " GB",
+    "Chế độ nguồn: " + (powerTable().find(p=>p[0]===state.powerKey)||powerTable()[0])[3]
+      + (state.battery && state.battery.supported && !state.battery.desktop
+         ? (state.battery.charging ? " (đang cắm sạc)" : " (đang chạy pin " + state.battery.level + "%)") : ""),
+    "Băng thông RAM: " + (state.bandwidth ? state.bandwidth.toFixed(1) + " GB/s" : "không đo được"),
+    "Màn hình: " + state.screen + " @ " + state.hz + " Hz",
+    "Hệ điều hành: " + state.os,
+    "",
+    "FPS ước lượng — " + PRESET_LABEL[preset] + " @ " + RES_LABEL[res] + " · FSR: " + up[2] + ":"
+  ];
+  for(const g of GAMES.filter(g=>state.cat==="all"||g.cat===state.cat)){
+    const e = estimate(g,res,preset);
+    lines.push("· " + g.n + ": " + (e.runnable ? e.fps + " FPS" : "không chạy nổi"));
+  }
+  const text = lines.join("\n");
+  try{
+    await navigator.clipboard.writeText(text);
+    $("copy").textContent = "Đã chép!";
+  }catch(err){
+    $("copy").textContent = "Không chép được";
+  }
+  setTimeout(()=>{ $("copy").textContent = "Chép kết quả"; }, 1800);
+});
+
+/* Khởi động: vẽ ngay bằng cấu hình mẫu, rồi quét đè lên */
+$("gcount").textContent = GAMES.length + " tựa game";
+syncPower();
+render();
+scan();
+</script>
